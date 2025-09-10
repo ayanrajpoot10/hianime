@@ -50,11 +50,13 @@ func main() {
 
 	args := flagSet.Args()
 
+	s := scraper.New(cfg)
+
 	switch command {
 	case "serve", "server", "api":
-		startAPIServer(cfg)
+		startAPIServer(s, cfg)
 	case "home", "homepage":
-		scrapHomepage(cfg)
+		scrapHomepage(s, cfg)
 	case "search":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime search <keyword> [page]")
@@ -67,21 +69,21 @@ func main() {
 				page = p
 			}
 		}
-		searchAnime(cfg, keyword, page)
+		searchAnime(s, cfg, keyword, page)
 	case "anime", "details":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime anime <anime-id>")
 			return
 		}
 		animeID := args[0]
-		getAnimeDetails(cfg, animeID)
+		getAnimeDetails(s, cfg, animeID)
 	case "episodes":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime episodes <anime-id>")
 			return
 		}
 		animeID := args[0]
-		getEpisodes(cfg, animeID)
+		getEpisodes(s, cfg, animeID)
 	case "list":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime list <category> [page]")
@@ -94,7 +96,7 @@ func main() {
 				page = p
 			}
 		}
-		getAnimeList(cfg, category, page)
+		getAnimeList(s, cfg, category, page)
 	case "genre":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime genre <genre-name> [page]")
@@ -107,14 +109,14 @@ func main() {
 				page = p
 			}
 		}
-		getGenreList(cfg, genre, page)
+		getGenreList(s, cfg, genre, page)
 	case "servers":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime servers <episode-id>")
 			return
 		}
 		episodeID := args[0]
-		getServers(cfg, episodeID)
+		getServers(s, cfg, episodeID)
 	case "stream":
 		if len(args) < 3 {
 			fmt.Println("Usage: hianime stream <episode-id> <server-type> <server-name>")
@@ -124,14 +126,14 @@ func main() {
 		episodeID := args[0]
 		serverType := args[1] // sub or dub
 		serverName := args[2] // HD-1, HD-2, etc.
-		getStreamLinks(cfg, episodeID, serverType, serverName)
+		getStreamLinks(s, cfg, episodeID, serverType, serverName)
 	case "suggestions", "suggest":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime suggestions <keyword>")
 			return
 		}
 		keyword := args[0]
-		getSuggestions(cfg, keyword)
+		getSuggestions(s, cfg, keyword)
 	case "help", "--help", "-h":
 		printUsage()
 	case "version", "--version", "-v":
@@ -142,8 +144,7 @@ func main() {
 	}
 }
 
-func startAPIServer(cfg *config.Config) {
-	s := scraper.New(cfg)
+func startAPIServer(s *scraper.Scraper, cfg *config.Config) {
 	handler := api.NewHandler(s)
 	router := api.NewRouter(handler, cfg)
 
@@ -152,9 +153,7 @@ func startAPIServer(cfg *config.Config) {
 	}
 }
 
-func scrapHomepage(cfg *config.Config) {
-	s := scraper.New(cfg)
-
+func scrapHomepage(s *scraper.Scraper, cfg *config.Config) {
 	if cfg.Verbose {
 		fmt.Println("Scraping homepage...")
 	}
@@ -167,9 +166,7 @@ func scrapHomepage(cfg *config.Config) {
 	outputData(cfg, data)
 }
 
-func searchAnime(cfg *config.Config, keyword string, page int) {
-	s := scraper.New(cfg)
-
+func searchAnime(s *scraper.Scraper, cfg *config.Config, keyword string, page int) {
 	if cfg.Verbose {
 		fmt.Printf("Searching for '%s' (page %d)...\n", keyword, page)
 	}
@@ -182,9 +179,7 @@ func searchAnime(cfg *config.Config, keyword string, page int) {
 	outputData(cfg, data)
 }
 
-func getAnimeDetails(cfg *config.Config, animeID string) {
-	s := scraper.New(cfg)
-
+func getAnimeDetails(s *scraper.Scraper, cfg *config.Config, animeID string) {
 	if cfg.Verbose {
 		fmt.Printf("Getting details for anime: %s...\n", animeID)
 	}
@@ -197,9 +192,7 @@ func getAnimeDetails(cfg *config.Config, animeID string) {
 	outputData(cfg, data)
 }
 
-func getEpisodes(cfg *config.Config, animeID string) {
-	s := scraper.New(cfg)
-
+func getEpisodes(s *scraper.Scraper, cfg *config.Config, animeID string) {
 	if cfg.Verbose {
 		fmt.Printf("Getting episodes for anime: %s...\n", animeID)
 	}
@@ -212,9 +205,7 @@ func getEpisodes(cfg *config.Config, animeID string) {
 	outputData(cfg, data)
 }
 
-func getAnimeList(cfg *config.Config, category string, page int) {
-	s := scraper.New(cfg)
-
+func getAnimeList(s *scraper.Scraper, cfg *config.Config, category string, page int) {
 	if cfg.Verbose {
 		fmt.Printf("Getting anime list for category '%s' (page %d)...\n", category, page)
 	}
@@ -227,9 +218,7 @@ func getAnimeList(cfg *config.Config, category string, page int) {
 	outputData(cfg, data)
 }
 
-func getGenreList(cfg *config.Config, genre string, page int) {
-	s := scraper.New(cfg)
-
+func getGenreList(s *scraper.Scraper, cfg *config.Config, genre string, page int) {
 	if cfg.Verbose {
 		fmt.Printf("Getting anime list for genre '%s' (page %d)...\n", genre, page)
 	}
@@ -242,9 +231,7 @@ func getGenreList(cfg *config.Config, genre string, page int) {
 	outputData(cfg, data)
 }
 
-func getServers(cfg *config.Config, episodeID string) {
-	s := scraper.New(cfg)
-
+func getServers(s *scraper.Scraper, cfg *config.Config, episodeID string) {
 	if cfg.Verbose {
 		fmt.Printf("Getting servers for episode: %s...\n", episodeID)
 	}
@@ -257,9 +244,7 @@ func getServers(cfg *config.Config, episodeID string) {
 	outputData(cfg, data)
 }
 
-func getStreamLinks(cfg *config.Config, episodeID, serverType, serverName string) {
-	s := scraper.New(cfg)
-
+func getStreamLinks(s *scraper.Scraper, cfg *config.Config, episodeID, serverType, serverName string) {
 	if cfg.Verbose {
 		fmt.Printf("Getting stream links for episode: %s (type: %s, server: %s)...\n", episodeID, serverType, serverName)
 	}
@@ -272,9 +257,7 @@ func getStreamLinks(cfg *config.Config, episodeID, serverType, serverName string
 	outputData(cfg, data)
 }
 
-func getSuggestions(cfg *config.Config, keyword string) {
-	s := scraper.New(cfg)
-
+func getSuggestions(s *scraper.Scraper, cfg *config.Config, keyword string) {
 	if cfg.Verbose {
 		fmt.Printf("Getting suggestions for '%s'...\n", keyword)
 	}
