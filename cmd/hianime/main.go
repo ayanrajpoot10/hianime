@@ -174,7 +174,7 @@ func scrapHomepage(cfg *config.Config) {
 	s := scraper.New(cfg)
 
 	if cfg.Verbose {
-		fmt.Println("🏠 Scraping homepage...")
+		fmt.Println("Scraping homepage...")
 	}
 
 	data, err := s.Homepage()
@@ -189,7 +189,7 @@ func searchAnime(cfg *config.Config, keyword string, page int) {
 	s := scraper.New(cfg)
 
 	if cfg.Verbose {
-		fmt.Printf("🔍 Searching for '%s' (page %d)...\n", keyword, page)
+		fmt.Printf("Searching for '%s' (page %d)...\n", keyword, page)
 	}
 
 	data, err := s.Search(keyword, page)
@@ -204,7 +204,7 @@ func getAnimeDetails(cfg *config.Config, animeID string) {
 	s := scraper.New(cfg)
 
 	if cfg.Verbose {
-		fmt.Printf("📖 Getting details for anime: %s...\n", animeID)
+		fmt.Printf("Getting details for anime: %s...\n", animeID)
 	}
 
 	data, err := s.AnimeDetails(animeID)
@@ -219,7 +219,7 @@ func getEpisodes(cfg *config.Config, animeID string) {
 	s := scraper.New(cfg)
 
 	if cfg.Verbose {
-		fmt.Printf("📺 Getting episodes for anime: %s...\n", animeID)
+		fmt.Printf("Getting episodes for anime: %s...\n", animeID)
 	}
 
 	data, err := s.Episodes(animeID)
@@ -234,7 +234,7 @@ func getAnimeList(cfg *config.Config, category string, page int) {
 	s := scraper.New(cfg)
 
 	if cfg.Verbose {
-		fmt.Printf("📋 Getting anime list for category '%s' (page %d)...\n", category, page)
+		fmt.Printf("Getting anime list for category '%s' (page %d)...\n", category, page)
 	}
 
 	data, err := s.AnimeList(category, page)
@@ -249,7 +249,7 @@ func getGenreList(cfg *config.Config, genre string, page int) {
 	s := scraper.New(cfg)
 
 	if cfg.Verbose {
-		fmt.Printf("🎭 Getting anime list for genre '%s' (page %d)...\n", genre, page)
+		fmt.Printf("Getting anime list for genre '%s' (page %d)...\n", genre, page)
 	}
 
 	data, err := s.GenreList(genre, page)
@@ -264,7 +264,7 @@ func getServers(cfg *config.Config, episodeID string) {
 	s := scraper.New(cfg)
 
 	if cfg.Verbose {
-		fmt.Printf("🖥️  Getting servers for episode: %s...\n", episodeID)
+		fmt.Printf("Getting servers for episode: %s...\n", episodeID)
 	}
 
 	data, err := s.Servers(episodeID)
@@ -279,7 +279,7 @@ func getStreamLinks(cfg *config.Config, episodeID, serverType, serverName string
 	s := scraper.New(cfg)
 
 	if cfg.Verbose {
-		fmt.Printf("🎬 Getting stream links for episode: %s (type: %s, server: %s)...\n", episodeID, serverType, serverName)
+		fmt.Printf("Getting stream links for episode: %s (type: %s, server: %s)...\n", episodeID, serverType, serverName)
 	}
 
 	data, err := s.StreamLinks(episodeID, serverType, serverName)
@@ -294,7 +294,7 @@ func getSuggestions(cfg *config.Config, keyword string) {
 	s := scraper.New(cfg)
 
 	if cfg.Verbose {
-		fmt.Printf("💡 Getting suggestions for '%s'...\n", keyword)
+		fmt.Printf("Getting suggestions for '%s'...\n", keyword)
 	}
 
 	data, err := s.Suggestions(keyword)
@@ -337,7 +337,7 @@ func outputJSON(cfg *config.Config, data interface{}) {
 			log.Fatalf("Failed to write to file: %v", err)
 		}
 		if cfg.Verbose {
-			fmt.Printf("✅ Output written to %s\n", cfg.OutputFile)
+			fmt.Printf("Output written to %s\n", cfg.OutputFile)
 		}
 	} else {
 		fmt.Println(string(output))
@@ -475,7 +475,7 @@ func outputCSV(cfg *config.Config, data interface{}) {
 	}
 
 	if cfg.OutputFile != "" && cfg.Verbose {
-		fmt.Printf("✅ CSV output written to %s\n", cfg.OutputFile)
+		fmt.Printf("CSV output written to %s\n", cfg.OutputFile)
 	}
 }
 
