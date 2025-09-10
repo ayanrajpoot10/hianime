@@ -16,6 +16,11 @@ import (
 	"hianime/pkg/models"
 )
 
+type App struct {
+	scraper *scraper.Scraper
+	config  *config.Config
+}
+
 func main() {
 	// Parse command line arguments first
 	if len(os.Args) < 2 {
@@ -52,11 +57,16 @@ func main() {
 
 	s := scraper.New(cfg)
 
+	app := &App{
+		scraper: s,
+		config:  cfg,
+	}
+
 	switch command {
 	case "serve", "server", "api":
-		startAPIServer(s, cfg)
+		app.startAPIServer()
 	case "home", "homepage":
-		scrapHomepage(s, cfg)
+		app.scrapHomepage()
 	case "search":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime search <keyword> [page]")
@@ -69,21 +79,21 @@ func main() {
 				page = p
 			}
 		}
-		searchAnime(s, cfg, keyword, page)
+		app.searchAnime(keyword, page)
 	case "anime", "details":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime anime <anime-id>")
 			return
 		}
 		animeID := args[0]
-		getAnimeDetails(s, cfg, animeID)
+		app.getAnimeDetails(animeID)
 	case "episodes":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime episodes <anime-id>")
 			return
 		}
 		animeID := args[0]
-		getEpisodes(s, cfg, animeID)
+		app.getEpisodes(animeID)
 	case "list":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime list <category> [page]")
@@ -96,7 +106,7 @@ func main() {
 				page = p
 			}
 		}
-		getAnimeList(s, cfg, category, page)
+		app.getAnimeList(category, page)
 	case "genre":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime genre <genre-name> [page]")
@@ -109,14 +119,14 @@ func main() {
 				page = p
 			}
 		}
-		getGenreList(s, cfg, genre, page)
+		app.getGenreList(genre, page)
 	case "servers":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime servers <episode-id>")
 			return
 		}
 		episodeID := args[0]
-		getServers(s, cfg, episodeID)
+		app.getServers(episodeID)
 	case "stream":
 		if len(args) < 3 {
 			fmt.Println("Usage: hianime stream <episode-id> <server-type> <server-name>")
@@ -126,14 +136,14 @@ func main() {
 		episodeID := args[0]
 		serverType := args[1] // sub or dub
 		serverName := args[2] // HD-1, HD-2, etc.
-		getStreamLinks(s, cfg, episodeID, serverType, serverName)
+		app.getStreamLinks(episodeID, serverType, serverName)
 	case "suggestions", "suggest":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime suggestions <keyword>")
 			return
 		}
 		keyword := args[0]
-		getSuggestions(s, cfg, keyword)
+		app.getSuggestions(keyword)
 	case "help", "--help", "-h":
 		printUsage()
 	case "version", "--version", "-v":
@@ -144,142 +154,142 @@ func main() {
 	}
 }
 
-func startAPIServer(s *scraper.Scraper, cfg *config.Config) {
-	handler := api.NewHandler(s)
-	router := api.NewRouter(handler, cfg)
+func (a *App) startAPIServer() {
+	handler := api.NewHandler(a.scraper)
+	router := api.NewRouter(handler, a.config)
 
 	if err := router.Start(); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
 
-func scrapHomepage(s *scraper.Scraper, cfg *config.Config) {
-	if cfg.Verbose {
+func (a *App) scrapHomepage() {
+	if a.config.Verbose {
 		fmt.Println("Scraping homepage...")
 	}
 
-	data, err := s.Homepage()
+	data, err := a.scraper.Homepage()
 	if err != nil {
 		log.Fatalf("Failed to scrape homepage: %v", err)
 	}
 
-	outputData(cfg, data)
+	a.outputData(data)
 }
 
-func searchAnime(s *scraper.Scraper, cfg *config.Config, keyword string, page int) {
-	if cfg.Verbose {
+func (a *App) searchAnime(keyword string, page int) {
+	if a.config.Verbose {
 		fmt.Printf("Searching for '%s' (page %d)...\n", keyword, page)
 	}
 
-	data, err := s.Search(keyword, page)
+	data, err := a.scraper.Search(keyword, page)
 	if err != nil {
 		log.Fatalf("Failed to search anime: %v", err)
 	}
 
-	outputData(cfg, data)
+	a.outputData(data)
 }
 
-func getAnimeDetails(s *scraper.Scraper, cfg *config.Config, animeID string) {
-	if cfg.Verbose {
+func (a *App) getAnimeDetails(animeID string) {
+	if a.config.Verbose {
 		fmt.Printf("Getting details for anime: %s...\n", animeID)
 	}
 
-	data, err := s.AnimeDetails(animeID)
+	data, err := a.scraper.AnimeDetails(animeID)
 	if err != nil {
 		log.Fatalf("Failed to get anime details: %v", err)
 	}
 
-	outputData(cfg, data)
+	a.outputData(data)
 }
 
-func getEpisodes(s *scraper.Scraper, cfg *config.Config, animeID string) {
-	if cfg.Verbose {
+func (a *App) getEpisodes(animeID string) {
+	if a.config.Verbose {
 		fmt.Printf("Getting episodes for anime: %s...\n", animeID)
 	}
 
-	data, err := s.Episodes(animeID)
+	data, err := a.scraper.Episodes(animeID)
 	if err != nil {
 		log.Fatalf("Failed to get episodes: %v", err)
 	}
 
-	outputData(cfg, data)
+	a.outputData(data)
 }
 
-func getAnimeList(s *scraper.Scraper, cfg *config.Config, category string, page int) {
-	if cfg.Verbose {
+func (a *App) getAnimeList(category string, page int) {
+	if a.config.Verbose {
 		fmt.Printf("Getting anime list for category '%s' (page %d)...\n", category, page)
 	}
 
-	data, err := s.AnimeList(category, page)
+	data, err := a.scraper.AnimeList(category, page)
 	if err != nil {
 		log.Fatalf("Failed to get anime list: %v", err)
 	}
 
-	outputData(cfg, data)
+	a.outputData(data)
 }
 
-func getGenreList(s *scraper.Scraper, cfg *config.Config, genre string, page int) {
-	if cfg.Verbose {
+func (a *App) getGenreList(genre string, page int) {
+	if a.config.Verbose {
 		fmt.Printf("Getting anime list for genre '%s' (page %d)...\n", genre, page)
 	}
 
-	data, err := s.GenreList(genre, page)
+	data, err := a.scraper.GenreList(genre, page)
 	if err != nil {
 		log.Fatalf("Failed to get genre list: %v", err)
 	}
 
-	outputData(cfg, data)
+	a.outputData(data)
 }
 
-func getServers(s *scraper.Scraper, cfg *config.Config, episodeID string) {
-	if cfg.Verbose {
+func (a *App) getServers(episodeID string) {
+	if a.config.Verbose {
 		fmt.Printf("Getting servers for episode: %s...\n", episodeID)
 	}
 
-	data, err := s.Servers(episodeID)
+	data, err := a.scraper.Servers(episodeID)
 	if err != nil {
 		log.Fatalf("Failed to get servers: %v", err)
 	}
 
-	outputData(cfg, data)
+	a.outputData(data)
 }
 
-func getStreamLinks(s *scraper.Scraper, cfg *config.Config, episodeID, serverType, serverName string) {
-	if cfg.Verbose {
+func (a *App) getStreamLinks(episodeID, serverType, serverName string) {
+	if a.config.Verbose {
 		fmt.Printf("Getting stream links for episode: %s (type: %s, server: %s)...\n", episodeID, serverType, serverName)
 	}
 
-	data, err := s.StreamLinks(episodeID, serverType, serverName)
+	data, err := a.scraper.StreamLinks(episodeID, serverType, serverName)
 	if err != nil {
 		log.Fatalf("Failed to get stream links: %v", err)
 	}
 
-	outputData(cfg, data)
+	a.outputData(data)
 }
 
-func getSuggestions(s *scraper.Scraper, cfg *config.Config, keyword string) {
-	if cfg.Verbose {
+func (a *App) getSuggestions(keyword string) {
+	if a.config.Verbose {
 		fmt.Printf("Getting suggestions for '%s'...\n", keyword)
 	}
 
-	data, err := s.Suggestions(keyword)
+	data, err := a.scraper.Suggestions(keyword)
 	if err != nil {
 		log.Fatalf("Failed to get suggestions: %v", err)
 	}
 
-	outputData(cfg, data)
+	a.outputData(data)
 }
 
-func outputData(cfg *config.Config, data interface{}) {
-	switch cfg.OutputFormat {
+func (a *App) outputData(data interface{}) {
+	switch a.config.OutputFormat {
 	case "json":
-		outputJSON(cfg, data)
+		outputJSON(a.config, data)
 	case "table":
-		outputTable(cfg, data)
+		outputTable(a.config, data)
 	case "csv":
-		outputCSV(cfg, data)
+		outputCSV(a.config, data)
 	default:
-		outputJSON(cfg, data)
+		outputJSON(a.config, data)
 	}
 }
 
