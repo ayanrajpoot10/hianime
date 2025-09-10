@@ -26,8 +26,7 @@ func main() {
 	command := os.Args[1]
 
 	// Create config and parse flags for the remaining arguments
-	cfg := config.DefaultConfig()
-	cfg.LoadFromEnv()
+	cfg := config.New()
 
 	// Parse flags from the arguments after the command
 	flagSet := flag.NewFlagSet(command, flag.ExitOnError)
@@ -39,27 +38,8 @@ func main() {
 	port := flagSet.String("port", cfg.Port, "Port to run the server on")
 	host := flagSet.String("host", cfg.Host, "Host to bind the server to")
 
-	// Parse flags starting from the second argument
-	if len(os.Args) > 2 {
-		// Find flags (starting with --)
-		var cmdArgs []string
-		var flagArgs []string
-
-		for i := 2; i < len(os.Args); i++ {
-			if os.Args[i][:1] == "-" {
-				flagArgs = append(flagArgs, os.Args[i:]...)
-				break
-			}
-			cmdArgs = append(cmdArgs, os.Args[i])
-		}
-
-		if len(flagArgs) > 0 {
-			flagSet.Parse(flagArgs)
-		}
-
-		// Update os.Args to only include command and non-flag arguments
-		os.Args = append([]string{os.Args[0], command}, cmdArgs...)
-	}
+	// Parse flags starting from the third argument
+	flagSet.Parse(os.Args[2:])
 
 	// Apply parsed flags to config
 	cfg.OutputFormat = *format
@@ -68,87 +48,89 @@ func main() {
 	cfg.Port = *port
 	cfg.Host = *host
 
+	args := flagSet.Args()
+
 	switch command {
 	case "serve", "server", "api":
 		startAPIServer(cfg)
 	case "home", "homepage":
 		scrapHomepage(cfg)
 	case "search":
-		if len(os.Args) < 3 {
+		if len(args) < 1 {
 			fmt.Println("Usage: hianime search <keyword> [page]")
 			return
 		}
-		keyword := os.Args[2]
+		keyword := args[0]
 		page := 1
-		if len(os.Args) >= 4 {
-			if p, err := strconv.Atoi(os.Args[3]); err == nil {
+		if len(args) >= 2 {
+			if p, err := strconv.Atoi(args[1]); err == nil {
 				page = p
 			}
 		}
 		searchAnime(cfg, keyword, page)
 	case "anime", "details":
-		if len(os.Args) < 3 {
+		if len(args) < 1 {
 			fmt.Println("Usage: hianime anime <anime-id>")
 			return
 		}
-		animeID := os.Args[2]
+		animeID := args[0]
 		getAnimeDetails(cfg, animeID)
 	case "episodes":
-		if len(os.Args) < 3 {
+		if len(args) < 1 {
 			fmt.Println("Usage: hianime episodes <anime-id>")
 			return
 		}
-		animeID := os.Args[2]
+		animeID := args[0]
 		getEpisodes(cfg, animeID)
 	case "list":
-		if len(os.Args) < 3 {
+		if len(args) < 1 {
 			fmt.Println("Usage: hianime list <category> [page]")
 			return
 		}
-		category := os.Args[2]
+		category := args[0]
 		page := 1
-		if len(os.Args) >= 4 {
-			if p, err := strconv.Atoi(os.Args[3]); err == nil {
+		if len(args) >= 2 {
+			if p, err := strconv.Atoi(args[1]); err == nil {
 				page = p
 			}
 		}
 		getAnimeList(cfg, category, page)
 	case "genre":
-		if len(os.Args) < 3 {
+		if len(args) < 1 {
 			fmt.Println("Usage: hianime genre <genre-name> [page]")
 			return
 		}
-		genre := os.Args[2]
+		genre := args[0]
 		page := 1
-		if len(os.Args) >= 4 {
-			if p, err := strconv.Atoi(os.Args[3]); err == nil {
+		if len(args) >= 2 {
+			if p, err := strconv.Atoi(args[1]); err == nil {
 				page = p
 			}
 		}
 		getGenreList(cfg, genre, page)
 	case "servers":
-		if len(os.Args) < 3 {
+		if len(args) < 1 {
 			fmt.Println("Usage: hianime servers <episode-id>")
 			return
 		}
-		episodeID := os.Args[2]
+		episodeID := args[0]
 		getServers(cfg, episodeID)
 	case "stream":
-		if len(os.Args) < 5 {
+		if len(args) < 3 {
 			fmt.Println("Usage: hianime stream <episode-id> <server-type> <server-name>")
 			fmt.Println("Example: hianime stream \"one-piece-100::ep=1\" sub HD-1")
 			return
 		}
-		episodeID := os.Args[2]
-		serverType := os.Args[3] // sub or dub
-		serverName := os.Args[4] // HD-1, HD-2, etc.
+		episodeID := args[0]
+		serverType := args[1] // sub or dub
+		serverName := args[2] // HD-1, HD-2, etc.
 		getStreamLinks(cfg, episodeID, serverType, serverName)
 	case "suggestions", "suggest":
-		if len(os.Args) < 3 {
+		if len(args) < 1 {
 			fmt.Println("Usage: hianime suggestions <keyword>")
 			return
 		}
-		keyword := os.Args[2]
+		keyword := args[0]
 		getSuggestions(cfg, keyword)
 	case "help", "--help", "-h":
 		printUsage()
