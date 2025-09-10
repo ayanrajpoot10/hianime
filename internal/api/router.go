@@ -1,13 +1,16 @@
 package api
 
 import (
+	_ "embed"
 	"fmt"
+	"hianime/config"
 	"log"
 	"net/http"
 	"strings"
-
-	"hianime/config"
 )
+
+//go:embed templates/index.html
+var htmlTemplate string
 
 // Router handles HTTP routing for the API
 type Router struct {
@@ -96,90 +99,7 @@ func (router *Router) handleRoot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	html := `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiAnime Scraper API</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: #333; text-align: center; }
-        .endpoints { margin-top: 30px; }
-        .endpoint { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #007bff; }
-        .method { color: #007bff; font-weight: bold; }
-        .path { font-family: monospace; background: #e9ecef; padding: 2px 6px; border-radius: 3px; }
-        .description { margin-top: 5px; color: #666; }
-        .footer { text-align: center; margin-top: 40px; color: #666; font-size: 0.9em; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🎌 HiAnime Scraper API</h1>
-        <p>A RESTful API for scraping anime content from hianime.to</p>
-        
-        <div class="endpoints">
-            <h2>Available Endpoints</h2>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/api/home</span></div>
-                <div class="description">Get homepage content including spotlight, trending, and latest anime</div>
-            </div>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/api/search?keyword={query}&page={page}</span></div>
-                <div class="description">Search for anime by keyword</div>
-            </div>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/api/suggestion?keyword={query}</span></div>
-                <div class="description">Get search suggestions for a keyword</div>
-            </div>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/api/anime/{id}</span></div>
-                <div class="description">Get detailed information about a specific anime</div>
-            </div>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/api/episodes/{id}</span></div>
-                <div class="description">Get episode list for a specific anime</div>
-            </div>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/api/animes/{category}?page={page}</span></div>
-                <div class="description">Get anime list by category (most-popular, top-airing, etc.)</div>
-            </div>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/api/genre/{genre}?page={page}</span></div>
-                <div class="description">Get anime list by genre</div>
-            </div>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/api/servers?id={episodeId}</span></div>
-                <div class="description">Get available servers for an episode</div>
-            </div>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/api/stream?id={episodeId}&type={sub|dub}&server={serverName}</span></div>
-                <div class="description">Get streaming links for an episode</div>
-            </div>
-            
-            <div class="endpoint">
-                <div><span class="method">GET</span> <span class="path">/health</span></div>
-                <div class="description">Health check endpoint</div>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p>HiAnime Scraper API - Built with Go</p>
-            <p><strong>Note:</strong> This is an unofficial API for educational purposes only.</p>
-        </div>
-    </div>
-</body>
-</html>`
+	html := htmlTemplate
 
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
