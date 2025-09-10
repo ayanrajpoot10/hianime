@@ -149,23 +149,6 @@ curl "http://localhost:3030/api/animes/most-popular?page=1"
 | `ENABLE_CORS` | `true` | Enable CORS for API |
 | `MODE` | `both` | Application mode (api/cli/both) |
 
-### Command Line Flags
-
-```bash
-# Server options
---port 8080              # Server port
---host 127.0.0.1         # Server host
-
-# Scraper options
---base-url https://hianime.to  # Base URL
---timeout 30s            # Request timeout
---rate-limit 1s          # Rate limiting
-
-# CLI options
---format json|table|csv  # Output format
---output file.json       # Output file
---verbose               # Verbose logging
-```
 
 ## 🔄 API Response Format
 
