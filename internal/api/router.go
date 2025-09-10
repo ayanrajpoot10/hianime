@@ -1,16 +1,12 @@
 package api
 
 import (
-	_ "embed"
 	"fmt"
 	"hianime/config"
 	"log"
 	"net/http"
 	"strings"
 )
-
-//go:embed templates/index.html
-var htmlTemplate string
 
 // Router handles HTTP routing for the API
 type Router struct {
@@ -56,13 +52,13 @@ func (router *Router) route(w http.ResponseWriter, r *http.Request) {
 	switch {
 	// Root endpoints
 	case path == "/":
-		router.handleRoot(w, r)
+		router.handler.Root(w, r)
 	case path == "/health":
 		router.handler.Health(w, r)
 
 	// API endpoints
 	case path == "/api" || path == "/api/":
-		router.handleAPIRoot(w, r)
+		router.handler.APIRoot(w, r)
 	case path == "/api/home":
 		router.handler.Homepage(w, r)
 	case path == "/api/search":
@@ -90,54 +86,6 @@ func (router *Router) route(w http.ResponseWriter, r *http.Request) {
 	default:
 		router.handleNotFound(w, r)
 	}
-}
-
-// handleRoot handles requests to the root path
-func (router *Router) handleRoot(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	html := htmlTemplate
-
-	w.Header().Set("Content-Type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(html))
-}
-
-// handleAPIRoot handles requests to the API root path
-func (router *Router) handleAPIRoot(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	response := map[string]interface{}{
-		"name":        "HiAnime Scraper API",
-		"description": "A RESTful API for scraping anime content from hianime.to",
-		"endpoints": map[string]string{
-			"homepage":    "/api/home",
-			"search":      "/api/search?keyword={query}&page={page}",
-			"suggestions": "/api/suggestion?keyword={query}",
-			"anime":       "/api/anime/{id}",
-			"episodes":    "/api/episodes/{id}",
-			"anime_list":  "/api/animes/{category}?page={page}",
-			"genre_list":  "/api/genre/{genre}?page={page}",
-			"servers":     "/api/servers?id={episodeId}",
-			"stream":      "/api/stream?id={episodeId}&type={sub|dub}&server={serverName}",
-			"health":      "/api/health",
-		},
-		"categories": []string{
-			"most-popular", "top-airing", "most-favorite", "completed",
-			"recently-added", "recently-updated", "top-upcoming",
-			"subbed-anime", "dubbed-anime", "movie", "tv", "ova", "ona", "special", "events",
-		},
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	router.handler.writeJSON(w, http.StatusOK, response)
 }
 
 // handleNotFound handles 404 errors

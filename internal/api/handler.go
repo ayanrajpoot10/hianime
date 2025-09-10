@@ -1,6 +1,7 @@
 package api
 
 import (
+	_ "embed"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -8,6 +9,9 @@ import (
 	"hianime/internal/scraper"
 	"hianime/pkg/models"
 )
+
+//go:embed templates/index.html
+var htmlTemplate string
 
 // Handler holds the scraper instance and handles HTTP requests
 type Handler struct {
@@ -302,5 +306,53 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 		"message": "hianime API is running",
 	}
 
+	h.writeJSON(w, http.StatusOK, response)
+}
+
+// Root handles requests to the root path
+func (h *Handler) Root(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	html := htmlTemplate
+
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(html))
+}
+
+// APIRoot handles requests to the API root path
+func (h *Handler) APIRoot(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	response := map[string]interface{}{
+		"name":        "HiAnime Scraper API",
+		"description": "A RESTful API for scraping anime content from hianime.to",
+		"endpoints": map[string]string{
+			"homepage":    "/api/home",
+			"search":      "/api/search?keyword={query}&page={page}",
+			"suggestions": "/api/suggestion?keyword={query}",
+			"anime":       "/api/anime/{id}",
+			"episodes":    "/api/episodes/{id}",
+			"anime_list":  "/api/animes/{category}?page={page}",
+			"genre_list":  "/api/genre/{genre}?page={page}",
+			"servers":     "/api/servers?id={episodeId}",
+			"stream":      "/api/stream?id={episodeId}&type={sub|dub}&server={serverName}",
+			"health":      "/api/health",
+		},
+		"categories": []string{
+			"most-popular", "top-airing", "most-favorite", "completed",
+			"recently-added", "recently-updated", "top-upcoming",
+			"subbed-anime", "dubbed-anime", "movie", "tv", "ova", "ona", "special", "events",
+		},
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	h.writeJSON(w, http.StatusOK, response)
 }
