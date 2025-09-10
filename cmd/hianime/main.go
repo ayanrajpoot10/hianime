@@ -22,45 +22,7 @@ type App struct {
 }
 
 func main() {
-	// Parse command line arguments first
-	if len(os.Args) < 2 {
-		printUsage()
-		return
-	}
-
-	command := os.Args[1]
-
-	// Create config and parse flags for the remaining arguments
-	cfg := config.New()
-
-	// Parse flags from the arguments after the command
-	flagSet := flag.NewFlagSet(command, flag.ExitOnError)
-
-	// Define flags
-	format := flagSet.String("format", cfg.OutputFormat, "Output format (json, table, csv)")
-	output := flagSet.String("output", cfg.OutputFile, "Output file path")
-	verbose := flagSet.Bool("verbose", cfg.Verbose, "Enable verbose logging")
-	port := flagSet.String("port", cfg.Port, "Port to run the server on")
-	host := flagSet.String("host", cfg.Host, "Host to bind the server to")
-
-	// Parse flags starting from the third argument
-	flagSet.Parse(os.Args[2:])
-
-	// Apply parsed flags to config
-	cfg.OutputFormat = *format
-	cfg.OutputFile = *output
-	cfg.Verbose = *verbose
-	cfg.Port = *port
-	cfg.Host = *host
-
-	args := flagSet.Args()
-
-	s := scraper.New(cfg)
-
-	app := &App{
-		scraper: s,
-		config:  cfg,
-	}
+	app, command, args := setupApp()
 
 	switch command {
 	case "serve", "server", "api":
@@ -152,6 +114,47 @@ func main() {
 		fmt.Printf("Unknown command: %s\n", command)
 		printUsage()
 	}
+}
+
+func setupApp() (*App, string, []string) {
+	if len(os.Args) < 2 {
+		printUsage()
+		os.Exit(0)
+	}
+
+	command := os.Args[1]
+
+	cfg := config.New()
+
+	flagSet := flag.NewFlagSet(command, flag.ExitOnError)
+
+	// Define flags
+	format := flagSet.String("format", cfg.OutputFormat, "Output format (json, table, csv)")
+	output := flagSet.String("output", cfg.OutputFile, "Output file path")
+	verbose := flagSet.Bool("verbose", cfg.Verbose, "Enable verbose logging")
+	port := flagSet.String("port", cfg.Port, "Port to run the server on")
+	host := flagSet.String("host", cfg.Host, "Host to bind the server to")
+
+	// Parse flags starting from the third argument
+	flagSet.Parse(os.Args[2:])
+
+	// Apply parsed flags to config
+	cfg.OutputFormat = *format
+	cfg.OutputFile = *output
+	cfg.Verbose = *verbose
+	cfg.Port = *port
+	cfg.Host = *host
+
+	args := flagSet.Args()
+
+	s := scraper.New(cfg)
+
+	app := &App{
+		scraper: s,
+		config:  cfg,
+	}
+
+	return app, command, args
 }
 
 func (a *App) startAPIServer() {
