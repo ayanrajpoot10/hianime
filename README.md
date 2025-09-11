@@ -147,7 +147,6 @@ curl "http://localhost:3030/api/animes/most-popular?page=1"
 | `OUTPUT_FORMAT` | `json` | Default CLI output format |
 | `VERBOSE` | `false` | Enable verbose logging |
 | `ENABLE_CORS` | `true` | Enable CORS for API |
-| `MODE` | `both` | Application mode (api/cli/both) |
 
 
 ## 🔄 API Response Format
