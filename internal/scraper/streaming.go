@@ -49,7 +49,7 @@ func (s *Scraper) Servers(episodeID string) (*models.ServersResponse, error) {
 	}
 
 	var ajaxResp struct {
-		Status interface{} `json:"status"` // Can be string or bool
+		Status any         `json:"status"` // Can be string or bool
 		HTML   string      `json:"html"`
 	}
 

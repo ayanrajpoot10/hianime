@@ -26,7 +26,7 @@ func NewHandler(s *scraper.Scraper) *Handler {
 }
 
 // writeJSON writes a JSON response
-func (h *Handler) writeJSON(w http.ResponseWriter, statusCode int, data interface{}) {
+func (h *Handler) writeJSON(w http.ResponseWriter, statusCode int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
@@ -301,7 +301,7 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := map[string]interface{}{
+	response := map[string]any{
 		"status":  "ok",
 		"message": "hianime API is running",
 	}
@@ -328,7 +328,7 @@ func (h *Handler) APIRoot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := map[string]interface{}{
+	response := map[string]any{
 		"name":        "HiAnime Scraper API",
 		"description": "A RESTful API for scraping anime content from hianime.to",
 		"endpoints": map[string]string{

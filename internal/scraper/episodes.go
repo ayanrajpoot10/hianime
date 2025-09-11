@@ -43,7 +43,7 @@ func (s *Scraper) Episodes(animeID string) (*models.EpisodesResponse, error) {
 	}
 
 	var ajaxResp struct {
-		Status interface{} `json:"status"` // Can be string or bool
+		Status any         `json:"status"` // Can be string or bool
 		HTML   string      `json:"html"`
 	}
 

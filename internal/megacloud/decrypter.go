@@ -116,7 +116,7 @@ func (d *Decrypter) Extract3(embedURL string) (*models.StreamResponse, error) {
 	defer srcResp.Body.Close()
 
 	var rawSourceData struct {
-		Sources interface{}       `json:"sources"`
+		Sources any               `json:"sources"`
 		Tracks  []models.Track    `json:"tracks"`
 		Intro   *models.TimeRange `json:"intro"`
 		Outro   *models.TimeRange `json:"outro"`
@@ -142,10 +142,10 @@ func (d *Decrypter) Extract3(embedURL string) (*models.StreamResponse, error) {
 		if err := json.Unmarshal([]byte(decryptedJSON), &decryptedSources); err != nil {
 			return nil, fmt.Errorf("failed to parse decrypted sources: %w", err)
 		}
-	} else if sources, ok := rawSourceData.Sources.([]interface{}); ok {
+	} else if sources, ok := rawSourceData.Sources.([]any); ok {
 		// Sources are already decrypted
 		for _, src := range sources {
-			if srcMap, ok := src.(map[string]interface{}); ok {
+			if srcMap, ok := src.(map[string]any); ok {
 				file, _ := srcMap["file"].(string)
 				srcType, _ := srcMap["type"].(string)
 				decryptedSources = append(decryptedSources, struct {
@@ -336,7 +336,7 @@ func (d *Decrypter) Extract5(embedURL string) (*models.StreamResponse, error) {
 	defer srcResp.Body.Close()
 
 	var rawSourceData struct {
-		Sources   interface{}       `json:"sources"`
+		Sources   any               `json:"sources"`
 		Tracks    []models.Track    `json:"tracks"`
 		Intro     *models.TimeRange `json:"intro"`
 		Outro     *models.TimeRange `json:"outro"`
@@ -355,9 +355,9 @@ func (d *Decrypter) Extract5(embedURL string) (*models.StreamResponse, error) {
 
 	if !rawSourceData.Encrypted {
 		// Sources are already decrypted
-		if sources, ok := rawSourceData.Sources.([]interface{}); ok {
+		if sources, ok := rawSourceData.Sources.([]any); ok {
 			for _, src := range sources {
-				if srcMap, ok := src.(map[string]interface{}); ok {
+				if srcMap, ok := src.(map[string]any); ok {
 					file, _ := srcMap["file"].(string)
 					srcType, _ := srcMap["type"].(string)
 					decryptedSources = append(decryptedSources, struct {
@@ -767,7 +767,7 @@ func (d *Decrypter) DecryptOriginal(selectedServer *models.Server, episodeID str
 	defer resp2.Body.Close()
 
 	var rawSourceData struct {
-		Sources interface{}       `json:"sources"`
+		Sources any               `json:"sources"`
 		Tracks  []models.Track    `json:"tracks"`
 		Intro   *models.TimeRange `json:"intro"`
 		Outro   *models.TimeRange `json:"outro"`
@@ -822,8 +822,8 @@ func (d *Decrypter) DecryptOriginal(selectedServer *models.Server, episodeID str
 		}
 	} else {
 		// Sources are already decrypted
-		if sources, ok := rawSourceData.Sources.([]interface{}); ok && len(sources) > 0 {
-			if sourceMap, ok := sources[0].(map[string]interface{}); ok {
+		if sources, ok := rawSourceData.Sources.([]any); ok && len(sources) > 0 {
+			if sourceMap, ok := sources[0].(map[string]any); ok {
 				if file, ok := sourceMap["file"].(string); ok {
 					decryptedSources = []struct {
 						File string `json:"file"`

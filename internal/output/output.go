@@ -13,7 +13,7 @@ import (
 	"hianime/pkg/models"
 )
 
-func OutputData(cfg *config.Config, data interface{}) {
+func OutputData(cfg *config.Config, data any) {
 	switch cfg.OutputFormat {
 	case "json":
 		OutputJSON(cfg, data)
@@ -26,7 +26,7 @@ func OutputData(cfg *config.Config, data interface{}) {
 	}
 }
 
-func OutputJSON(cfg *config.Config, data interface{}) {
+func OutputJSON(cfg *config.Config, data any) {
 	var output []byte
 	var err error
 
@@ -52,7 +52,7 @@ func OutputJSON(cfg *config.Config, data interface{}) {
 	}
 }
 
-func OutputTable(cfg *config.Config, data interface{}) {
+func OutputTable(cfg *config.Config, data any) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
 
 	switch v := data.(type) {
@@ -115,7 +115,7 @@ func OutputTable(cfg *config.Config, data interface{}) {
 	w.Flush()
 }
 
-func OutputCSV(cfg *config.Config, data interface{}) {
+func OutputCSV(cfg *config.Config, data any) {
 	var records [][]string
 
 	switch v := data.(type) {
