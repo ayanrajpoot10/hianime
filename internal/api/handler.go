@@ -316,11 +316,9 @@ func (h *Handler) Root(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	html := htmlTemplate
-
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(html))
+	w.Write([]byte(htmlTemplate))
 }
 
 // APIRoot handles requests to the API root path
