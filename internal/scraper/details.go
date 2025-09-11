@@ -97,6 +97,9 @@ func (s *Scraper) AnimeDetails(animeID string) (*models.AnimeDetailResponse, err
 		}
 	})
 
+	// Initialize Episodes to avoid nil pointer dereference
+	detail.Episodes = &models.Episodes{}
+
 	// Extract episode information
 	subText := strings.TrimSpace(doc.Find(".anisc-info .tick-sub").Text())
 	dubText := strings.TrimSpace(doc.Find(".anisc-info .tick-dub").Text())
@@ -107,10 +110,10 @@ func (s *Scraper) AnimeDetails(animeID string) (*models.AnimeDetailResponse, err
 	detail.Episodes.Eps, _ = strconv.Atoi(epsText)
 
 	// Extract related animes
-	detail.RelatedAnimes = s.extractGenericAnimeList(doc, ".block_area .tab-content .flw-item")
+	detail.RelatedAnimes = s.extractAnimes(doc, ".block_area .tab-content .flw-item")
 
 	// Extract recommended animes
-	detail.RecommendedAnimes = s.extractGenericAnimeList(doc, ".block_area:contains('You might also like') .flw-item")
+	detail.RecommendedAnimes = s.extractAnimes(doc, ".block_area:contains('You might also like') .flw-item")
 
 	return detail, nil
 }

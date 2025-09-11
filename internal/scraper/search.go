@@ -43,7 +43,7 @@ func (s *Scraper) Search(keyword string, page int) (*models.SearchResponse, erro
 	}
 
 	// Extract search results
-	response.Results = s.extractGenericAnimeList(doc, ".film_list .film_list-wrap .flw-item")
+	response.Results = s.extractAnimes(doc, ".film_list .film_list-wrap .flw-item")
 
 	// Check if there's a next page
 	response.HasNextPage = doc.Find(".pagination .next").Length() > 0
@@ -73,8 +73,8 @@ func (s *Scraper) Suggestions(keyword string) (*models.SearchResponse, error) {
 	}
 
 	var ajaxResp struct {
-		Status any         `json:"status"` // Can be string or bool
-		HTML   string      `json:"html"`
+		Status any    `json:"status"` // Can be string or bool
+		HTML   string `json:"html"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&ajaxResp); err != nil {

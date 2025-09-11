@@ -51,7 +51,7 @@ func (s *Scraper) AnimeList(category string, page int) (*models.ListPageResponse
 	}
 
 	// Extract anime list
-	response.Results = s.extractGenericAnimeList(doc, ".film_list .film_list-wrap .flw-item")
+	response.Results = s.extractAnimes(doc, ".film_list .film_list-wrap .flw-item")
 
 	// Check if there's a next page
 	response.HasNextPage = doc.Find(".pagination .next").Length() > 0
@@ -91,7 +91,7 @@ func (s *Scraper) GenreList(genre string, page int) (*models.ListPageResponse, e
 	}
 
 	// Extract anime list
-	response.Results = s.extractGenericAnimeList(doc, ".film_list .film_list-wrap .flw-item")
+	response.Results = s.extractAnimes(doc, ".film_list .film_list-wrap .flw-item")
 
 	// Check if there's a next page
 	response.HasNextPage = doc.Find(".pagination .next").Length() > 0

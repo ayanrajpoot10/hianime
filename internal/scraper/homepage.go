@@ -100,6 +100,9 @@ func (s *Scraper) extractSpotlight(doc *goquery.Document) []models.AnimeItem {
 		item.Aired = strings.TrimSpace(details.Find(".scd-item.m-hide").Text())
 		item.Quality = strings.TrimSpace(details.Find(".scd-item .quality").Text())
 
+		// Initialize Episodes to avoid nil pointer dereference
+		item.Episodes = &models.Episodes{}
+
 		// Extract episode information
 		subText := strings.TrimSpace(details.Find(".tick-sub").Text())
 		dubText := strings.TrimSpace(details.Find(".tick-dub").Text())
@@ -151,51 +154,51 @@ func (s *Scraper) extractTrending(doc *goquery.Document) []models.AnimeItem {
 
 // extractLatestCompleted extracts latest completed anime
 func (s *Scraper) extractLatestCompleted(doc *goquery.Document) []models.AnimeItem {
-	return s.extractGenericAnimeList(doc, "#main-content .block_area_home:contains('Latest Completed') .film_list .film_list-wrap .flw-item")
+	return s.extractMostPopularAnimes(doc, "#anime-featured .row div:nth-of-type(4) .anif-block-ul ul li")
 }
 
 // extractTopAiring extracts top airing anime
 func (s *Scraper) extractTopAiring(doc *goquery.Document) []models.AnimeItem {
-	return s.extractGenericAnimeList(doc, "#main-content .block_area_home:contains('Top Airing') .film_list .film_list-wrap .flw-item")
+	return s.extractMostPopularAnimes(doc, "#anime-featured .row div:nth-of-type(1) .anif-block-ul ul li")
 }
 
 // extractMostPopular extracts most popular anime
 func (s *Scraper) extractMostPopular(doc *goquery.Document) []models.AnimeItem {
-	return s.extractGenericAnimeList(doc, "#main-content .block_area_home:contains('Most Popular') .film_list .film_list-wrap .flw-item")
+	return s.extractMostPopularAnimes(doc, "#anime-featured .row div:nth-of-type(2) .anif-block-ul ul li")
 }
 
 // extractMostFavorite extracts most favorite anime
 func (s *Scraper) extractMostFavorite(doc *goquery.Document) []models.AnimeItem {
-	return s.extractGenericAnimeList(doc, "#main-content .block_area_home:contains('Most Favorite') .film_list .film_list-wrap .flw-item")
+	return s.extractMostPopularAnimes(doc, "#anime-featured .row div:nth-of-type(3) .anif-block-ul ul li")
 }
 
 // extractRecentlyAdded extracts recently added anime
 func (s *Scraper) extractRecentlyAdded(doc *goquery.Document) []models.AnimeItem {
-	return s.extractGenericAnimeList(doc, "#main-content .block_area_home:contains('Recently Added') .film_list .film_list-wrap .flw-item")
+	return s.extractAnimes(doc, "#main-content .block_area_home:contains('Recently Added') .film_list .film_list-wrap .flw-item")
 }
 
 // extractLatestUpdated extracts latest updated anime
 func (s *Scraper) extractLatestUpdated(doc *goquery.Document) []models.AnimeItem {
-	return s.extractGenericAnimeList(doc, "#main-content .block_area_home:contains('Latest Updated') .film_list .film_list-wrap .flw-item")
+	return s.extractAnimes(doc, "#main-content .block_area_home:nth-of-type(1) .tab-content .film_list-wrap .flw-item")
 }
 
 // extractTopUpcoming extracts top upcoming anime
 func (s *Scraper) extractTopUpcoming(doc *goquery.Document) []models.AnimeItem {
-	return s.extractGenericAnimeList(doc, "#main-content .block_area_home:contains('Top Upcoming') .film_list .film_list-wrap .flw-item")
+	return s.extractAnimes(doc, "#main-content .block_area_home:nth-of-type(3) .tab-content .film_list-wrap .flw-item")
 }
 
 // extractTop10 extracts top 10 rankings
 func (s *Scraper) extractTop10(doc *goquery.Document) models.Top10 {
 	top10 := models.Top10{}
 
-	// Extract Today's top 10
-	top10.Today = s.extractRankingList(doc, "#top-viewed-day .anif-block-ul li")
+	// Extract Today's top 10 (day period)
+	top10.Today = s.extractTop10Animes(doc, "day")
 
 	// Extract Week's top 10
-	top10.Week = s.extractRankingList(doc, "#top-viewed-week .anif-block-ul li")
+	top10.Week = s.extractTop10Animes(doc, "week")
 
 	// Extract Month's top 10
-	top10.Month = s.extractRankingList(doc, "#top-viewed-month .anif-block-ul li")
+	top10.Month = s.extractTop10Animes(doc, "month")
 
 	return top10
 }

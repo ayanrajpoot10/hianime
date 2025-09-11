@@ -10,10 +10,11 @@ type AnimeItem struct {
 	Type             string      `json:"type,omitempty"`
 	Quality          string      `json:"quality,omitempty"`
 	Duration         string      `json:"duration,omitempty"`
+	Rating           string      `json:"rating,omitempty"`
 	Aired            string      `json:"aired,omitempty"`
 	Synopsis         string      `json:"synopsis,omitempty"`
 	Status           string      `json:"status,omitempty"`
-	Episodes         Episodes    `json:"episodes,omitempty"`
+	Episodes         *Episodes   `json:"episodes,omitempty"`
 	Characters       []Character `json:"characters,omitempty"`
 	Genres           []string    `json:"genres,omitempty"`
 }
@@ -160,8 +161,8 @@ type ListPageResponse struct {
 
 // APIResponse represents a generic API response wrapper
 type APIResponse struct {
-	Success bool        `json:"success"`
-	Data    any         `json:"data,omitempty"`
-	Message string      `json:"message,omitempty"`
-	Error   string      `json:"error,omitempty"`
+	Success bool   `json:"success"`
+	Data    any    `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
+	Error   string `json:"error,omitempty"`
 }
