@@ -93,8 +93,8 @@ func main() {
 			return
 		}
 		episodeID := args[0]
-		serverType := args[1] // sub or dub
-		serverName := args[2] // HD-1, HD-2, etc.
+		serverType := args[1]
+		serverName := args[2]
 		app.getStreamLinks(episodeID, serverType, serverName)
 	case "suggestions", "suggest":
 		if len(args) < 1 {
