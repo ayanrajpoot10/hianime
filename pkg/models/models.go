@@ -47,11 +47,11 @@ type Season struct {
 type HomepageResponse struct {
 	Spotlight       []AnimeItem `json:"spotlight"`
 	Trending        []AnimeItem `json:"trending"`
-	LatestCompleted []AnimeItem `json:"latestCompleted,omitempty"`
-	LatestUpdated   []AnimeItem `json:"latestUpdated,omitempty"`
 	TopAiring       []AnimeItem `json:"topAiring,omitempty"`
 	MostPopular     []AnimeItem `json:"mostPopular,omitempty"`
 	MostFavorite    []AnimeItem `json:"mostFavorite,omitempty"`
+	LatestCompleted []AnimeItem `json:"latestCompleted,omitempty"`
+	LatestUpdated   []AnimeItem `json:"latestUpdated,omitempty"`
 	RecentlyAdded   []AnimeItem `json:"recentlyAdded,omitempty"`
 	TopUpcoming     []AnimeItem `json:"topUpcoming,omitempty"`
 	Top10           Top10       `json:"top10,omitempty"`
@@ -167,6 +167,27 @@ type ListPageResponse struct {
 	HasNextPage bool        `json:"hasNextPage"`
 	CurrentPage int         `json:"currentPage"`
 	Category    string      `json:"category,omitempty"`
+}
+
+// QtipAnime represents anime information from qtip endpoint
+type QtipAnime struct {
+	ID          string    `json:"id"`
+	Name        string    `json:"name,omitempty"`
+	MalScore    string    `json:"malscore,omitempty"`
+	Quality     string    `json:"quality,omitempty"`
+	Episodes    *Episodes `json:"episodes,omitempty"`
+	Type        string    `json:"type,omitempty"`
+	Description string    `json:"description,omitempty"`
+	JName       string    `json:"jname,omitempty"`
+	Synonyms    string    `json:"synonyms,omitempty"`
+	Aired       string    `json:"aired,omitempty"`
+	Status      string    `json:"status,omitempty"`
+	Genres      []string  `json:"genres,omitempty"`
+}
+
+// QtipResponse represents the response structure for qtip data
+type QtipResponse struct {
+	Anime QtipAnime `json:"anime"`
 }
 
 // APIResponse represents a generic API response wrapper

@@ -75,6 +75,8 @@ func (router *Router) route(w http.ResponseWriter, r *http.Request) {
 	// Dynamic endpoints with path parameters
 	case strings.HasPrefix(path, "/api/anime/"):
 		router.handler.AnimeDetails(w, r)
+	case strings.HasPrefix(path, "/api/qtip/"):
+		router.handler.AnimeQtipInfo(w, r)
 	case strings.HasPrefix(path, "/api/episodes/"):
 		router.handler.Episodes(w, r)
 	case strings.HasPrefix(path, "/api/animes/"):

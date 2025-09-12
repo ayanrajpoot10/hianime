@@ -94,6 +94,31 @@ func (h *Handler) AnimeDetails(w http.ResponseWriter, r *http.Request) {
 	h.writeJSON(w, http.StatusOK, data)
 }
 
+// AnimeQtipInfo handles GET /api/qtip/{id}
+func (h *Handler) AnimeQtipInfo(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		return
+	}
+
+	// Extract anime ID from URL path
+	path := r.URL.Path
+	animeID := path[len("/api/qtip/"):]
+
+	if animeID == "" {
+		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		return
+	}
+
+	data, err := h.scraper.GetAnimeQtipInfo(animeID)
+	if err != nil {
+		h.writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.writeJSON(w, http.StatusOK, data)
+}
+
 // Search handles GET /api/search
 func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -336,6 +361,7 @@ func (h *Handler) APIRoot(w http.ResponseWriter, r *http.Request) {
 			"search":      "/api/search?keyword={query}&page={page}",
 			"suggestions": "/api/suggestion?keyword={query}",
 			"anime":       "/api/anime/{id}",
+			"qtip":        "/api/qtip/{id}",
 			"episodes":    "/api/episodes/{id}",
 			"anime_list":  "/api/animes/{category}?page={page}",
 			"genre_list":  "/api/genre/{genre}?page={page}",

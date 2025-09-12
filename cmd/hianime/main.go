@@ -46,6 +46,13 @@ func main() {
 		}
 		animeID := args[0]
 		app.getAnimeDetails(animeID)
+	case "qtip":
+		if len(args) < 1 {
+			fmt.Println("Usage: hianime qtip <anime-id>")
+			return
+		}
+		animeID := args[0]
+		app.getAnimeQtipInfo(animeID)
 	case "episodes":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime episodes <anime-id>")
@@ -202,6 +209,19 @@ func (a *App) getAnimeDetails(animeID string) {
 	output.OutputData(a.config, data)
 }
 
+func (a *App) getAnimeQtipInfo(animeID string) {
+	if a.config.Verbose {
+		fmt.Printf("Getting qtip info for anime: %s...\n", animeID)
+	}
+
+	data, err := a.scraper.GetAnimeQtipInfo(animeID)
+	if err != nil {
+		log.Fatalf("Failed to get anime qtip info: %v", err)
+	}
+
+	output.OutputData(a.config, data)
+}
+
 func (a *App) getEpisodes(animeID string) {
 	if a.config.Verbose {
 		fmt.Printf("Getting episodes for anime: %s...\n", animeID)
@@ -291,6 +311,7 @@ COMMANDS:
     home                           Scrape homepage content
     search <keyword> [page]        Search for anime
     anime <anime-id>               Get anime details
+    qtip <anime-id>                Get anime qtip information
     episodes <anime-id>            Get episode list
     list <category> [page]         Get anime list by category
     genre <genre-name> [page]      Get anime list by genre
@@ -317,6 +338,7 @@ EXAMPLES:
     hianime home --format table
     hianime search "death note" 1
     hianime anime "death-note-60"
+    hianime qtip "death-note-60"
     hianime list most-popular 1
     hianime genre action 1 --output anime.csv --format csv`)
 }
