@@ -87,6 +87,8 @@ func (router *Router) route(w http.ResponseWriter, r *http.Request) {
 		router.handler.AnimeList(w, r)
 	case strings.HasPrefix(path, "/api/genre/"):
 		router.handler.GenreList(w, r)
+	case strings.HasPrefix(path, "/api/azlist/"):
+		router.handler.AZList(w, r)
 
 	// Not found
 	default:

@@ -86,6 +86,21 @@ func main() {
 			}
 		}
 		app.getGenreList(genre, page)
+	case "azlist", "az-list":
+		if len(args) < 1 {
+			fmt.Println("Usage: hianime azlist <sort-option> [page]")
+			fmt.Println("Sort options: all, other, A-Z")
+			fmt.Println("Example: hianime azlist A 1")
+			return
+		}
+		sortOption := args[0]
+		page := 1
+		if len(args) >= 2 {
+			if p, err := strconv.Atoi(args[1]); err == nil {
+				page = p
+			}
+		}
+		app.getAZList(sortOption, page)
 	case "servers":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime servers <episode-id>")
@@ -282,6 +297,19 @@ func (a *App) getGenreList(genre string, page int) {
 	output.OutputData(a.config, data)
 }
 
+func (a *App) getAZList(sortOption string, page int) {
+	if a.config.Verbose {
+		fmt.Printf("Getting A-Z list for sort option '%s' (page %d)...\n", sortOption, page)
+	}
+
+	data, err := a.scraper.GetAZList(sortOption, page)
+	if err != nil {
+		log.Fatalf("Failed to get A-Z list: %v", err)
+	}
+
+	output.OutputData(a.config, data)
+}
+
 func (a *App) getServers(episodeID string) {
 	if a.config.Verbose {
 		fmt.Printf("Getting servers for episode: %s...\n", episodeID)
@@ -362,6 +390,7 @@ COMMANDS:
     episodes <anime-id>            Get episode list
     list <category> [page]         Get anime list by category
     genre <genre-name> [page]      Get anime list by genre
+    azlist <sort-option> [page]    Get anime list sorted alphabetically (A-Z)
     servers <episode-id>           Get available servers for episode
     stream <episode-id> <type> <server>  Get streaming links for episode
     suggestions <keyword>          Get search suggestions
@@ -391,7 +420,8 @@ EXAMPLES:
     hianime schedule "2024-01-15" -330
     hianime next-episode "death-note-60"
     hianime list most-popular 1
-    hianime genre action 1 --output anime.csv --format csv`)
+    hianime genre action 1 --output anime.csv --format csv
+    hianime azlist A 1`)
 }
 
 func printVersion() {

@@ -213,6 +213,60 @@ type NextEpisodeScheduleResponse struct {
 	SecondsUntilAiring *int64 `json:"secondsUntilAiring,omitempty"`
 }
 
+// AZListSortOption represents available sort options for A-Z list
+type AZListSortOption string
+
+const (
+	AZListAll   AZListSortOption = "all"
+	AZListOther AZListSortOption = "other"
+	AZListA     AZListSortOption = "A"
+	AZListB     AZListSortOption = "B"
+	AZListC     AZListSortOption = "C"
+	AZListD     AZListSortOption = "D"
+	AZListE     AZListSortOption = "E"
+	AZListF     AZListSortOption = "F"
+	AZListG     AZListSortOption = "G"
+	AZListH     AZListSortOption = "H"
+	AZListI     AZListSortOption = "I"
+	AZListJ     AZListSortOption = "J"
+	AZListK     AZListSortOption = "K"
+	AZListL     AZListSortOption = "L"
+	AZListM     AZListSortOption = "M"
+	AZListN     AZListSortOption = "N"
+	AZListO     AZListSortOption = "O"
+	AZListP     AZListSortOption = "P"
+	AZListQ     AZListSortOption = "Q"
+	AZListR     AZListSortOption = "R"
+	AZListS     AZListSortOption = "S"
+	AZListT     AZListSortOption = "T"
+	AZListU     AZListSortOption = "U"
+	AZListV     AZListSortOption = "V"
+	AZListW     AZListSortOption = "W"
+	AZListX     AZListSortOption = "X"
+	AZListY     AZListSortOption = "Y"
+	AZListZ     AZListSortOption = "Z"
+)
+
+// ValidAZListSortOptions maps valid sort options
+var ValidAZListSortOptions = map[string]bool{
+	"all":   true,
+	"other": true,
+	"A":     true, "B": true, "C": true, "D": true, "E": true, "F": true,
+	"G": true, "H": true, "I": true, "J": true, "K": true, "L": true,
+	"M": true, "N": true, "O": true, "P": true, "Q": true, "R": true,
+	"S": true, "T": true, "U": true, "V": true, "W": true, "X": true,
+	"Y": true, "Z": true,
+}
+
+// AZListResponse represents the response structure for A-Z list data
+type AZListResponse struct {
+	SortOption  string      `json:"sortOption"`
+	Animes      []AnimeItem `json:"animes"`
+	TotalPages  int         `json:"totalPages"`
+	HasNextPage bool        `json:"hasNextPage"`
+	CurrentPage int         `json:"currentPage"`
+}
+
 // APIResponse represents a generic API response wrapper
 type APIResponse struct {
 	Success bool   `json:"success"`

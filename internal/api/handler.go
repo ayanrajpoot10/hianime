@@ -374,6 +374,39 @@ func (h *Handler) GenreList(w http.ResponseWriter, r *http.Request) {
 	h.writeJSON(w, http.StatusOK, data)
 }
 
+// AZList handles GET /api/azlist/{sortOption}
+func (h *Handler) AZList(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		return
+	}
+
+	// Extract sort option from URL path
+	path := r.URL.Path
+	sortOption := path[len("/api/azlist/"):]
+
+	if sortOption == "" {
+		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		return
+	}
+
+	query := r.URL.Query()
+	page := 1
+	if pageStr := query.Get("page"); pageStr != "" {
+		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
+			page = p
+		}
+	}
+
+	data, err := h.scraper.GetAZList(sortOption, page)
+	if err != nil {
+		h.writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.writeJSON(w, http.StatusOK, data)
+}
+
 // Health handles GET /api/health
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -420,6 +453,7 @@ func (h *Handler) APIRoot(w http.ResponseWriter, r *http.Request) {
 			"episodes":              "/api/episodes/{id}",
 			"anime_list":            "/api/animes/{category}?page={page}",
 			"genre_list":            "/api/genre/{genre}?page={page}",
+			"azlist":                "/api/azlist/{sortOption}?page={page}",
 			"servers":               "/api/servers?id={episodeId}",
 			"stream":                "/api/stream?id={episodeId}&type={sub|dub}&server={serverName}",
 			"estimated_schedule":    "/api/schedule?date={YYYY-MM-DD}&tzOffset={offset}",
