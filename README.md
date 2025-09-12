@@ -14,7 +14,7 @@
 
 - **REST API Server**: Full-featured HTTP API with JSON responses
 - **CLI Tool**: Command-line interface for direct scraping
-- **Streaming Links**: Fetch streaming links from multiple servers
+- **Streaming Links**: Fetch streaming links from multiple servers (not yet implemented)
 - **Search & Discovery**: Search anime with suggestions and pagination
 - **Comprehensive Data**: Anime details, episodes, servers, and genres
 - **Multiple Output Formats**: JSON, Table, and CSV output support
@@ -91,7 +91,7 @@ The CLI tool provides direct access to scraping functions:
 # Get available servers for an episode
 ./hianime servers "one-piece-100::ep=1"
 
-# Get streaming links
+# Get streaming links (not yet implemented)
 ./hianime stream "one-piece-100::ep=1" sub HD-1
 
 # Output formats
@@ -118,7 +118,7 @@ http://localhost:3030/api
 | GET | `/animes/{category}?page={page}` | Anime by category |
 | GET | `/genre/{genre}?page={page}` | Anime by genre |
 | GET | `/servers?id={episodeId}` | Available servers |
-| GET | `/stream?id={episodeId}&type={sub\|dub}&server={name}` | **Streaming links** |
+| GET | `/stream?id={episodeId}&type={sub\|dub}&server={name}` | **Streaming links (not yet implemented)** |
 | GET | `/health` | Health check |
 
 
