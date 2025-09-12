@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/ayanrajpoot10/hianime">
-    <img src="https://raw.githubusercontent.com/Ayanrajpoot10/hianime/refs/heads/main/image/logo.png" alt="HiAnime Logo" width="150" height="150" />
+    <img src="https://raw.githubusercontent.com/Ayanrajpoot10/hianime/refs/heads/main/image/logo.png" alt="HiAnime Logo" width="175" height="175" />
   </a>
 </p>
 
