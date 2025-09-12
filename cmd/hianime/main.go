@@ -146,6 +146,20 @@ func main() {
 		}
 		animeID := args[0]
 		app.getNextEpisodeSchedule(animeID)
+	case "producer":
+		if len(args) < 1 {
+			fmt.Println("Usage: hianime producer <producer-name> [page]")
+			fmt.Println("Example: hianime producer \"Studio Ghibli\" 1")
+			return
+		}
+		producerName := args[0]
+		page := 1
+		if len(args) >= 2 {
+			if p, err := strconv.Atoi(args[1]); err == nil && p > 0 {
+				page = p
+			}
+		}
+		app.getProducerAnimes(producerName, page)
 	case "help", "--help", "-h":
 		printUsage()
 	case "version", "--version", "-v":
@@ -310,6 +324,19 @@ func (a *App) getAZList(sortOption string, page int) {
 	output.OutputData(a.config, data)
 }
 
+func (a *App) getProducerAnimes(producerName string, page int) {
+	if a.config.Verbose {
+		fmt.Printf("Getting animes from producer '%s' (page %d)...\n", producerName, page)
+	}
+
+	data, err := a.scraper.GetProducerAnimes(producerName, page)
+	if err != nil {
+		log.Fatalf("Failed to get producer animes: %v", err)
+	}
+
+	output.OutputData(a.config, data)
+}
+
 func (a *App) getServers(episodeID string) {
 	if a.config.Verbose {
 		fmt.Printf("Getting servers for episode: %s...\n", episodeID)
@@ -396,6 +423,7 @@ COMMANDS:
     suggestions <keyword>          Get search suggestions
     schedule <date> [timezone]     Get estimated schedule for date (YYYY-MM-DD)
     next-episode <anime-id>        Get next episode schedule for anime
+    producer <producer-name> [page] Get anime list from producer/studio
     help                           Show this help message
     version                        Show version information
 

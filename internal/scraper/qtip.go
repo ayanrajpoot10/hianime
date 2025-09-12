@@ -119,9 +119,7 @@ func (s *Scraper) GetAnimeQtipInfo(animeID string) (*models.QtipResponse, error)
 		}
 
 		// Remove trailing colon
-		if strings.HasSuffix(keyText, ":") {
-			keyText = keyText[:len(keyText)-1]
-		}
+		keyText = strings.TrimSuffix(keyText, ":")
 		key := strings.ToLower(keyText)
 
 		var value string

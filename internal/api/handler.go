@@ -407,6 +407,39 @@ func (h *Handler) AZList(w http.ResponseWriter, r *http.Request) {
 	h.writeJSON(w, http.StatusOK, data)
 }
 
+// Producer handles GET /api/producer/{producer-name}
+func (h *Handler) Producer(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		return
+	}
+
+	// Extract producer name from URL path
+	path := r.URL.Path
+	producerName := path[len("/api/producer/"):]
+
+	if producerName == "" {
+		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		return
+	}
+
+	query := r.URL.Query()
+	page := 1
+	if pageStr := query.Get("page"); pageStr != "" {
+		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
+			page = p
+		}
+	}
+
+	data, err := h.scraper.GetProducerAnimes(producerName, page)
+	if err != nil {
+		h.writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.writeJSON(w, http.StatusOK, data)
+}
+
 // Health handles GET /api/health
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {

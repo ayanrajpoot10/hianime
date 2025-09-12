@@ -267,6 +267,36 @@ type AZListResponse struct {
 	CurrentPage int         `json:"currentPage"`
 }
 
+// ProducerAnime represents an anime from a producer page
+type ProducerAnime struct {
+	ID       string    `json:"id"`
+	Name     string    `json:"name"`
+	Poster   string    `json:"poster"`
+	Duration string    `json:"duration"`
+	Type     string    `json:"type"`
+	Rating   string    `json:"rating"`
+	Episodes *Episodes `json:"episodes,omitempty"`
+}
+
+// ProducerResponse represents the response from the producer endpoint
+type ProducerResponse struct {
+	ProducerName          string           `json:"producerName"`
+	Animes                []ProducerAnime  `json:"animes"`
+	Top10Animes           Top10            `json:"top10Animes"`
+	TopAiringAnimes       []TopAiringAnime `json:"topAiringAnimes"`
+	TotalPages            int              `json:"totalPages"`
+	CurrentPage           int              `json:"currentPage"`
+	HasNextPage           bool             `json:"hasNextPage"`
+}
+
+// TopAiringAnime represents a top airing anime item
+type TopAiringAnime struct {
+	ID       string    `json:"id"`
+	Name     string    `json:"name"`
+	Poster   string    `json:"poster"`
+	Episodes *Episodes `json:"episodes,omitempty"`
+}
+
 // APIResponse represents a generic API response wrapper
 type APIResponse struct {
 	Success bool   `json:"success"`

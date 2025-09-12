@@ -89,6 +89,8 @@ func (router *Router) route(w http.ResponseWriter, r *http.Request) {
 		router.handler.GenreList(w, r)
 	case strings.HasPrefix(path, "/api/azlist/"):
 		router.handler.AZList(w, r)
+	case strings.HasPrefix(path, "/api/producer/"):
+		router.handler.Producer(w, r)
 
 	// Not found
 	default:
