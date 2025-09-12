@@ -1,6 +1,14 @@
-# 🎌 HiAnime Scraper
+<p align="center">
+  <a href="https://github.com/ayanrajpoot10/hianime">
+    <img src="https://raw.githubusercontent.com/Ayanrajpoot10/hianime/refs/heads/main/image/logo.png" alt="HiAnime Logo" width="150" height="150" />
+  </a>
+</p>
 
-A powerful Go-based scraper and API for hianime.to with CLI and REST API capabilities.
+<h1 align="center">HiAnime API</h1>
+
+<p align="center">
+  A powerful Go-based scraper for hianime.to, providing both a REST API and CLI for easy data access.
+</p>
 
 ## ✨ Features
 
