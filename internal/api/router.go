@@ -69,6 +69,8 @@ func (router *Router) route(w http.ResponseWriter, r *http.Request) {
 		router.handler.Servers(w, r)
 	case path == "/api/stream":
 		router.handler.Stream(w, r)
+	case path == "/api/schedule":
+		router.handler.EstimatedSchedule(w, r)
 	case path == "/api/health":
 		router.handler.Health(w, r)
 
@@ -77,6 +79,8 @@ func (router *Router) route(w http.ResponseWriter, r *http.Request) {
 		router.handler.AnimeDetails(w, r)
 	case strings.HasPrefix(path, "/api/qtip/"):
 		router.handler.AnimeQtipInfo(w, r)
+	case strings.HasPrefix(path, "/api/next-episode/"):
+		router.handler.NextEpisodeSchedule(w, r)
 	case strings.HasPrefix(path, "/api/episodes/"):
 		router.handler.Episodes(w, r)
 	case strings.HasPrefix(path, "/api/animes/"):

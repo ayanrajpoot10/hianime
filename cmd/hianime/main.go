@@ -110,6 +110,27 @@ func main() {
 		}
 		keyword := args[0]
 		app.getSuggestions(keyword)
+	case "schedule":
+		if len(args) < 1 {
+			fmt.Println("Usage: hianime schedule <date> [timezone-offset]")
+			fmt.Println("Example: hianime schedule \"2024-01-15\" -330")
+			return
+		}
+		date := args[0]
+		tzOffset := -330 // Default to IST
+		if len(args) >= 2 {
+			if tz, err := strconv.Atoi(args[1]); err == nil {
+				tzOffset = tz
+			}
+		}
+		app.getEstimatedSchedule(date, tzOffset)
+	case "next-episode", "next":
+		if len(args) < 1 {
+			fmt.Println("Usage: hianime next-episode <anime-id>")
+			return
+		}
+		animeID := args[0]
+		app.getNextEpisodeSchedule(animeID)
 	case "help", "--help", "-h":
 		printUsage()
 	case "version", "--version", "-v":
@@ -300,6 +321,32 @@ func (a *App) getSuggestions(keyword string) {
 	output.OutputData(a.config, data)
 }
 
+func (a *App) getEstimatedSchedule(date string, tzOffset int) {
+	if a.config.Verbose {
+		fmt.Printf("Getting estimated schedule for date '%s' (timezone offset: %d)...\n", date, tzOffset)
+	}
+
+	data, err := a.scraper.GetEstimatedSchedule(date, tzOffset)
+	if err != nil {
+		log.Fatalf("Failed to get estimated schedule: %v", err)
+	}
+
+	output.OutputData(a.config, data)
+}
+
+func (a *App) getNextEpisodeSchedule(animeID string) {
+	if a.config.Verbose {
+		fmt.Printf("Getting next episode schedule for anime: %s...\n", animeID)
+	}
+
+	data, err := a.scraper.GetNextEpisodeSchedule(animeID)
+	if err != nil {
+		log.Fatalf("Failed to get next episode schedule: %v", err)
+	}
+
+	output.OutputData(a.config, data)
+}
+
 func printUsage() {
 	fmt.Println(`🎌 HiAnime Scraper CLI
 
@@ -318,6 +365,8 @@ COMMANDS:
     servers <episode-id>           Get available servers for episode
     stream <episode-id> <type> <server>  Get streaming links for episode
     suggestions <keyword>          Get search suggestions
+    schedule <date> [timezone]     Get estimated schedule for date (YYYY-MM-DD)
+    next-episode <anime-id>        Get next episode schedule for anime
     help                           Show this help message
     version                        Show version information
 
@@ -339,6 +388,8 @@ EXAMPLES:
     hianime search "death note" 1
     hianime anime "death-note-60"
     hianime qtip "death-note-60"
+    hianime schedule "2024-01-15" -330
+    hianime next-episode "death-note-60"
     hianime list most-popular 1
     hianime genre action 1 --output anime.csv --format csv`)
 }

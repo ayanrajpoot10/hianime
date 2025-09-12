@@ -119,6 +119,61 @@ func (h *Handler) AnimeQtipInfo(w http.ResponseWriter, r *http.Request) {
 	h.writeJSON(w, http.StatusOK, data)
 }
 
+// EstimatedSchedule handles GET /api/schedule
+func (h *Handler) EstimatedSchedule(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		return
+	}
+
+	query := r.URL.Query()
+	date := query.Get("date")
+	if date == "" {
+		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		return
+	}
+
+	tzOffset := -330 // Default timezone offset (IST)
+	if tzStr := query.Get("tzOffset"); tzStr != "" {
+		if tz, err := strconv.Atoi(tzStr); err == nil {
+			tzOffset = tz
+		}
+	}
+
+	data, err := h.scraper.GetEstimatedSchedule(date, tzOffset)
+	if err != nil {
+		h.writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.writeJSON(w, http.StatusOK, data)
+}
+
+// NextEpisodeSchedule handles GET /api/next-episode/{id}
+func (h *Handler) NextEpisodeSchedule(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		return
+	}
+
+	// Extract anime ID from URL path
+	path := r.URL.Path
+	animeID := path[len("/api/next-episode/"):]
+
+	if animeID == "" {
+		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		return
+	}
+
+	data, err := h.scraper.GetNextEpisodeSchedule(animeID)
+	if err != nil {
+		h.writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.writeJSON(w, http.StatusOK, data)
+}
+
 // Search handles GET /api/search
 func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -357,17 +412,19 @@ func (h *Handler) APIRoot(w http.ResponseWriter, r *http.Request) {
 		"name":        "HiAnime Scraper API",
 		"description": "A RESTful API for scraping anime content from hianime.to",
 		"endpoints": map[string]string{
-			"homepage":    "/api/home",
-			"search":      "/api/search?keyword={query}&page={page}",
-			"suggestions": "/api/suggestion?keyword={query}",
-			"anime":       "/api/anime/{id}",
-			"qtip":        "/api/qtip/{id}",
-			"episodes":    "/api/episodes/{id}",
-			"anime_list":  "/api/animes/{category}?page={page}",
-			"genre_list":  "/api/genre/{genre}?page={page}",
-			"servers":     "/api/servers?id={episodeId}",
-			"stream":      "/api/stream?id={episodeId}&type={sub|dub}&server={serverName}",
-			"health":      "/api/health",
+			"homepage":              "/api/home",
+			"search":                "/api/search?keyword={query}&page={page}",
+			"suggestions":           "/api/suggestion?keyword={query}",
+			"anime":                 "/api/anime/{id}",
+			"qtip":                  "/api/qtip/{id}",
+			"episodes":              "/api/episodes/{id}",
+			"anime_list":            "/api/animes/{category}?page={page}",
+			"genre_list":            "/api/genre/{genre}?page={page}",
+			"servers":               "/api/servers?id={episodeId}",
+			"stream":                "/api/stream?id={episodeId}&type={sub|dub}&server={serverName}",
+			"estimated_schedule":    "/api/schedule?date={YYYY-MM-DD}&tzOffset={offset}",
+			"next_episode_schedule": "/api/next-episode/{id}",
+			"health":                "/api/health",
 		},
 		"categories": []string{
 			"most-popular", "top-airing", "most-favorite", "completed",

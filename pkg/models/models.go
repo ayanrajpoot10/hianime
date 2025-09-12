@@ -190,6 +190,29 @@ type QtipResponse struct {
 	Anime QtipAnime `json:"anime"`
 }
 
+// ScheduledAnime represents a scheduled anime episode
+type ScheduledAnime struct {
+	ID                 string `json:"id"`
+	Time               string `json:"time,omitempty"`
+	Name               string `json:"name,omitempty"`
+	JName              string `json:"jname,omitempty"`
+	AiringTimestamp    int64  `json:"airingTimestamp"`
+	SecondsUntilAiring int64  `json:"secondsUntilAiring"`
+	Episode            int    `json:"episode"`
+}
+
+// EstimatedScheduleResponse represents the response structure for estimated schedule data
+type EstimatedScheduleResponse struct {
+	ScheduledAnimes []ScheduledAnime `json:"scheduledAnimes"`
+}
+
+// NextEpisodeScheduleResponse represents the response structure for next episode schedule data
+type NextEpisodeScheduleResponse struct {
+	AiringISOTimestamp string `json:"airingISOTimestamp,omitempty"`
+	AiringTimestamp    *int64 `json:"airingTimestamp,omitempty"`
+	SecondsUntilAiring *int64 `json:"secondsUntilAiring,omitempty"`
+}
+
 // APIResponse represents a generic API response wrapper
 type APIResponse struct {
 	Success bool   `json:"success"`
