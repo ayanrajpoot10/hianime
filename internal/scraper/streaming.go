@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"hianime/internal/megacloud"
 	"hianime/pkg/models"
 
 	"github.com/PuerkitoBio/goquery"
@@ -49,8 +48,8 @@ func (s *Scraper) Servers(episodeID string) (*models.ServersResponse, error) {
 	}
 
 	var ajaxResp struct {
-		Status any         `json:"status"` // Can be string or bool
-		HTML   string      `json:"html"`
+		Status any    `json:"status"` // Can be string or bool
+		HTML   string `json:"html"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&ajaxResp); err != nil {
@@ -145,33 +144,18 @@ func (s *Scraper) StreamLinks(episodeID, serverType, serverName string) (*models
 		return nil, fmt.Errorf("server not found: %s (%s)", serverName, serverType)
 	}
 
-	// Handle HD-4 fallback
-	if strings.ToLower(selectedServer.Name) == "hd-4" {
-		// Create megacloud decrypter
-		decrypter := megacloud.New(s.client, megacloud.Config{
-			BaseURL: s.config.BaseURL,
-		})
+	// TODO: Implement decryption logic for servers
+	// This should handle the decryption of streaming links for various servers
+	// can implement different decrypter logic here based on server type/name
 
-		fallbackURL, err := decrypter.GetHD4FallbackURL(episodeID, selectedServer.Type)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get HD-4 fallback URL: %w", err)
-		}
-
-		return &models.StreamResponse{
-			ID:   episodeID,
-			Type: selectedServer.Type,
-			Link: models.StreamLink{
-				File: fallbackURL,
-				Type: "hls",
-			},
-			Server: selectedServer.Name,
-		}, nil
-	}
-
-	// Use megacloud decrypter for other servers
-	decrypter := megacloud.New(s.client, megacloud.Config{
-		BaseURL: s.config.BaseURL,
-	})
-
-	return decrypter.Decrypt(selectedServer, episodeID)
+	// Placeholder implementation - return a basic response
+	return &models.StreamResponse{
+		ID:   episodeID,
+		Type: selectedServer.Type,
+		Link: models.StreamLink{
+			File: "https://example.com/placeholder_stream.m3u8",
+			Type: "hls",
+		},
+		Server: selectedServer.Name,
+	}, nil
 }

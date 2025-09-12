@@ -15,10 +15,8 @@ import (
 
 // Episodes scrapes episode list for a specific anime
 func (s *Scraper) Episodes(animeID string) (*models.EpisodesResponse, error) {
-	// Rate limiting
 	time.Sleep(s.config.RateLimit)
 
-	// Extract numeric ID from anime ID
 	parts := strings.Split(animeID, "-")
 	if len(parts) == 0 {
 		return nil, fmt.Errorf("invalid anime ID format")
@@ -43,15 +41,16 @@ func (s *Scraper) Episodes(animeID string) (*models.EpisodesResponse, error) {
 	}
 
 	var ajaxResp struct {
-		Status any         `json:"status"` // Can be string or bool
-		HTML   string      `json:"html"`
+		Status     any    `json:"status"`
+		HTML       string `json:"html"`
+		TotalItems int    `json:"totalItems"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&ajaxResp); err != nil {
 		return nil, fmt.Errorf("failed to decode JSON response: %w", err)
 	}
 
-	// Check status - handle both string and boolean values
+	// Handle status
 	var statusOK bool
 	switch v := ajaxResp.Status.(type) {
 	case string:
@@ -71,31 +70,38 @@ func (s *Scraper) Episodes(animeID string) (*models.EpisodesResponse, error) {
 		return nil, fmt.Errorf("failed to parse HTML: %w", err)
 	}
 
-	response := &models.EpisodesResponse{}
+	response := &models.EpisodesResponse{
+		TotalItems: ajaxResp.TotalItems,
+}
 
-	doc.Find(".detail-infor-content .ss-list a").Each(func(i int, sel *goquery.Selection) {
+	doc.Find(".ss-list a.ssl-item.ep-item").Each(func(i int, sel *goquery.Selection) {
 		episode := models.EpisodeInfo{}
 
-		// Extract episode number and ID
-		href, exists := sel.Attr("href")
-		if exists {
-			// href format: /watch/anime-name?ep=123
-			if strings.Contains(href, "?ep=") {
-				epParts := strings.Split(href, "?ep=")
-				if len(epParts) == 2 {
-					episode.Episode, _ = strconv.Atoi(epParts[1])
-					episode.ID = fmt.Sprintf("%s::ep=%s", animeID, epParts[1])
-				}
-			}
+		// Extract episode number
+		if epNumStr, exists := sel.Attr("data-number"); exists {
+			episode.Episode, _ = strconv.Atoi(epNumStr)
 		}
 
-		// Extract title
-		episode.Title = strings.TrimSpace(sel.Find(".ssli-detail .ep-name").Text())
+		// Extract episode ID
+		if epID, exists := sel.Attr("data-id"); exists {
+			episode.ID = fmt.Sprintf("%s::ep=%s", animeID, epID)
+		}
+
+		// Extract episode URL
+		if href, exists := sel.Attr("href"); exists {
+			episode.URL = fmt.Sprintf("%s%s", s.config.BaseURL, href)
+		}
+
+		// Title and JName
+		titleSel := sel.Find(".ep-name.e-dynamic-name")
+		episode.Title = strings.TrimSpace(titleSel.AttrOr("title", ""))
+		episode.JName = strings.TrimSpace(titleSel.AttrOr("data-jname", ""))
+
 		if episode.Title == "" {
 			episode.Title = fmt.Sprintf("Episode %d", episode.Episode)
 		}
 
-		// Check if it's a filler episode
+		// Is it a filler episode?
 		episode.IsFiller = sel.HasClass("ssl-item-filler")
 
 		response.Episodes = append(response.Episodes, episode)

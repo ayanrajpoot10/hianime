@@ -2,21 +2,22 @@ package models
 
 // AnimeItem represents a single anime item with all possible fields
 type AnimeItem struct {
-	ID               string      `json:"id"`
-	Title            string      `json:"title"`
-	AlternativeTitle string      `json:"alternative_title,omitempty"`
-	Poster           string      `json:"poster"`
-	Rank             int         `json:"rank,omitempty"`
-	Type             string      `json:"type,omitempty"`
-	Quality          string      `json:"quality,omitempty"`
-	Duration         string      `json:"duration,omitempty"`
-	Rating           string      `json:"rating,omitempty"`
-	Aired            string      `json:"aired,omitempty"`
-	Synopsis         string      `json:"synopsis,omitempty"`
-	Status           string      `json:"status,omitempty"`
-	Episodes         *Episodes   `json:"episodes,omitempty"`
-	Characters       []Character `json:"characters,omitempty"`
-	Genres           []string    `json:"genres,omitempty"`
+	ID          string      `json:"id"`
+	Title       string      `json:"title"`
+	JName       string      `json:"jname,omitempty"`
+	Poster      string      `json:"poster"`
+	Rank        int         `json:"rank,omitempty"`
+	Type        string      `json:"type,omitempty"`
+	Quality     string      `json:"quality,omitempty"`
+	Duration    string      `json:"duration,omitempty"`
+	Rating      string      `json:"rating,omitempty"`
+	Aired       string      `json:"aired,omitempty"`
+	Description string      `json:"description,omitempty"`
+	Status      string      `json:"status,omitempty"`
+	Episodes    *Episodes   `json:"episodes,omitempty"`
+	Characters  []Character `json:"characters,omitempty"`
+	Genres      []string    `json:"genres,omitempty"`
+	URL         string      `json:"url,omitempty"`
 }
 
 // Episodes represents episode information
@@ -32,6 +33,14 @@ type Character struct {
 	Name    string `json:"name"`
 	Picture string `json:"picture"`
 	Role    string `json:"role,omitempty"`
+}
+
+// Season represents a season of an anime
+type Season struct {
+	ID     string `json:"id"`
+	Title  string `json:"title"`
+	URL    string `json:"url"`
+	Poster string `json:"poster"`
 }
 
 // HomepageResponse represents the response structure for homepage data
@@ -59,17 +68,16 @@ type Top10 struct {
 // AnimeDetailResponse represents detailed anime information
 type AnimeDetailResponse struct {
 	AnimeItem
-	Description       string      `json:"description,omitempty"`
 	Studios           []string    `json:"studios,omitempty"`
 	Producers         []string    `json:"producers,omitempty"`
 	Licensors         []string    `json:"licensors,omitempty"`
-	Rating            string      `json:"rating,omitempty"`
 	Scored            string      `json:"scored,omitempty"`
 	Source            string      `json:"source,omitempty"`
 	PremiereDate      string      `json:"premiere_date,omitempty"`
 	Synonyms          []string    `json:"synonyms,omitempty"`
 	RelatedAnimes     []AnimeItem `json:"related_animes,omitempty"`
 	RecommendedAnimes []AnimeItem `json:"recommended_animes,omitempty"`
+	OtherSeasons      []Season    `json:"other_seasons,omitempty"`
 }
 
 // SearchResponse represents search results
@@ -82,16 +90,18 @@ type SearchResponse struct {
 
 // EpisodeInfo represents episode information
 type EpisodeInfo struct {
-	ID               string `json:"id"`
-	Title            string `json:"title"`
-	AlternativeTitle string `json:"alternative_title,omitempty"`
-	Episode          int    `json:"episode"`
-	IsFiller         bool   `json:"is_filler"`
+	ID       string `json:"id"`
+	Title    string `json:"title"`
+	JName    string `json:"jname,omitempty"`
+	URL      string `json:"url"`
+	Episode  int    `json:"episode"`
+	IsFiller bool   `json:"is_filler"`
 }
 
 // EpisodesResponse represents episodes list response
 type EpisodesResponse struct {
-	Episodes []EpisodeInfo `json:"episodes"`
+	Episodes   []EpisodeInfo `json:"episodes"`
+	TotalItems int           `json:"totalItems"`
 }
 
 // Server represents a streaming server

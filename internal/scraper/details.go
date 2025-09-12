@@ -14,7 +14,6 @@ import (
 
 // AnimeDetails scrapes detailed information about a specific anime
 func (s *Scraper) AnimeDetails(animeID string) (*models.AnimeDetailResponse, error) {
-	// Rate limiting
 	time.Sleep(s.config.RateLimit)
 
 	url := fmt.Sprintf("%s/%s", s.config.BaseURL, animeID)
@@ -34,24 +33,37 @@ func (s *Scraper) AnimeDetails(animeID string) (*models.AnimeDetailResponse, err
 		return nil, fmt.Errorf("failed to parse HTML: %w", err)
 	}
 
+	getText := func(selector string) string {
+		return strings.TrimSpace(doc.Find(selector).Text())
+	}
+
+	extractList := func(sel *goquery.Selection) []string {
+		list := []string{}
+		sel.Find("a").Each(func(i int, a *goquery.Selection) {
+			if text := strings.TrimSpace(a.Text()); text != "" {
+				list = append(list, text)
+			}
+		})
+		return list
+	}
+
 	detail := &models.AnimeDetailResponse{}
 
-	// Basic information
 	detail.ID = animeID
-	detail.Title = strings.TrimSpace(doc.Find(".anisc-info .film-name").Text())
-	detail.AlternativeTitle, _ = doc.Find(".anisc-info .film-name").Attr("data-jname")
-	detail.Poster, _ = doc.Find(".anisc-poster .film-poster-img").Attr("src")
+	detail.Title = strings.TrimSpace(doc.Find(".anisc-detail h2.film-name.dynamic-name").Text())
+	detail.JName = doc.Find(".anisc-info .film-name").AttrOr("data-jname", "")
+	detail.Poster = doc.Find(".anisc-poster .film-poster-img").AttrOr("src", "")
+	detail.Description = strings.TrimSpace(doc.Find(".film-description.m-hide .text").Text())
+	detail.Episodes = &models.Episodes{}
+	detail.RelatedAnimes = s.extractAnimes(doc, ".block_area .tab-content .flw-item")
+	detail.RecommendedAnimes = s.extractAnimes(doc, ".block_area:contains('You might also like') .flw-item")
 
-	// Description
-	detail.Description = strings.TrimSpace(doc.Find(".anisc-info .film-description .text").Text())
-	detail.Synopsis = detail.Description
-
-	// Extract details from info items
+	// Extract Japanese title and synonyms
 	doc.Find(".anisc-info .item").Each(func(i int, sel *goquery.Selection) {
-		label := strings.TrimSpace(sel.Find(".item-head").Text())
+		label := strings.ToLower(strings.TrimSpace(sel.Find(".item-head").Text()))
 		value := strings.TrimSpace(sel.Find(".name").Text())
 
-		switch strings.ToLower(label) {
+		switch label {
 		case "type:":
 			detail.Type = value
 		case "status:":
@@ -71,49 +83,39 @@ func (s *Scraper) AnimeDetails(animeID string) (*models.AnimeDetailResponse, err
 		case "premiered:":
 			detail.PremiereDate = value
 		case "studios:":
-			studios := []string{}
-			sel.Find(".name a").Each(func(i int, studio *goquery.Selection) {
-				if studio := strings.TrimSpace(studio.Text()); studio != "" {
-					studios = append(studios, studio)
-				}
-			})
-			detail.Studios = studios
+			detail.Studios = extractList(sel)
 		case "producers:":
-			producers := []string{}
-			sel.Find(".name a").Each(func(i int, producer *goquery.Selection) {
-				if producer := strings.TrimSpace(producer.Text()); producer != "" {
-					producers = append(producers, producer)
-				}
-			})
-			detail.Producers = producers
+			detail.Producers = extractList(sel)
 		case "genres:":
-			genres := []string{}
-			sel.Find(".name a").Each(func(i int, genre *goquery.Selection) {
-				if genre := strings.TrimSpace(genre.Text()); genre != "" {
-					genres = append(genres, genre)
-				}
-			})
-			detail.Genres = genres
+			detail.Genres = extractList(sel)
 		}
 	})
 
-	// Initialize Episodes to avoid nil pointer dereference
-	detail.Episodes = &models.Episodes{}
+	// Extract episode counts safely
+	if subCount, err := strconv.Atoi(getText(".anisc-info .tick-sub")); err == nil {
+		detail.Episodes.Sub = subCount
+	}
+	if dubCount, err := strconv.Atoi(getText(".anisc-info .tick-dub")); err == nil {
+		detail.Episodes.Dub = dubCount
+	}
+	if epsCount, err := strconv.Atoi(getText(".anisc-info .tick-eps")); err == nil {
+		detail.Episodes.Eps = epsCount
+	}
 
-	// Extract episode information
-	subText := strings.TrimSpace(doc.Find(".anisc-info .tick-sub").Text())
-	dubText := strings.TrimSpace(doc.Find(".anisc-info .tick-dub").Text())
-	epsText := strings.TrimSpace(doc.Find(".anisc-info .tick-eps").Text())
-
-	detail.Episodes.Sub, _ = strconv.Atoi(subText)
-	detail.Episodes.Dub, _ = strconv.Atoi(dubText)
-	detail.Episodes.Eps, _ = strconv.Atoi(epsText)
-
-	// Extract related animes
-	detail.RelatedAnimes = s.extractAnimes(doc, ".block_area .tab-content .flw-item")
-
-	// Extract recommended animes
-	detail.RecommendedAnimes = s.extractAnimes(doc, ".block_area:contains('You might also like') .flw-item")
+	// Extract other seasons
+	detail.OtherSeasons = []models.Season{}
+	doc.Find(".block_area-seasons .os-list .os-item").Each(func(i int, sel *goquery.Selection) {
+		href := sel.AttrOr("href", "")
+		id := strings.TrimPrefix(href, "/")
+		season := models.Season{
+			ID:     id,
+			Title:  sel.Find(".title").Text(),
+			URL:    fmt.Sprintf("%s%s", s.config.BaseURL, href),
+			Poster: strings.TrimPrefix(sel.Find(".season-poster").AttrOr("style", ""), "background-image: url("),
+		}
+		season.Poster = strings.TrimRight(season.Poster, ");")
+		detail.OtherSeasons = append(detail.OtherSeasons, season)
+	})
 
 	return detail, nil
 }

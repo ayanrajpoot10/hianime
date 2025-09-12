@@ -86,12 +86,12 @@ func (s *Scraper) extractSpotlight(doc *goquery.Document) []models.AnimeItem {
 		// Extract poster
 		item.Poster, _ = sel.Find(".deslide-cover .film-poster-img").Attr("data-src")
 
-		// Extract title and alternative title
+		// Extract title and jname
 		item.Title = strings.TrimSpace(sel.Find(".desi-head-title").Text())
-		item.AlternativeTitle, _ = sel.Find(".desi-head-title").Attr("data-jname")
+		item.JName, _ = sel.Find(".desi-head-title").Attr("data-jname")
 
-		// Extract synopsis
-		item.Synopsis = strings.TrimSpace(sel.Find(".desi-description").Text())
+		// Extract description
+		item.Description = strings.TrimSpace(sel.Find(".desi-description").Text())
 
 		// Extract details
 		details := sel.Find(".sc-detail")
@@ -129,10 +129,10 @@ func (s *Scraper) extractTrending(doc *goquery.Document) []models.AnimeItem {
 		item := models.AnimeItem{}
 		item.Rank = i + 1
 
-		// Extract title and alternative title
+		// Extract title and jname
 		titleEl := sel.Find(".item .film-title")
 		item.Title = strings.TrimSpace(titleEl.Text())
-		item.AlternativeTitle, _ = titleEl.Attr("data-jname")
+		item.JName, _ = titleEl.Attr("data-jname")
 
 		// Extract poster and ID
 		imageEl := sel.Find(".film-poster")

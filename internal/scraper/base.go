@@ -51,10 +51,10 @@ func (s *Scraper) extractAnimes(doc *goquery.Document, selector string) []models
 			}
 		}
 
-		// Extract title and alternative title
+		// Extract title and jname
 		item.Title = strings.TrimSpace(dynamicName.Text())
 		if jname, exists := dynamicName.Attr("data-jname"); exists {
-			item.AlternativeTitle = strings.TrimSpace(jname)
+			item.JName = strings.TrimSpace(jname)
 		}
 
 		// Extract poster
@@ -128,10 +128,10 @@ func (s *Scraper) extractTop10Animes(doc *goquery.Document, period string) []mod
 			}
 		}
 
-		// Extract title and alternative title
+		// Extract title and jname
 		item.Title = strings.TrimSpace(dynamicName.Text())
 		if jname, exists := dynamicName.Attr("data-jname"); exists {
-			item.AlternativeTitle = strings.TrimSpace(jname)
+			item.JName = strings.TrimSpace(jname)
 		}
 
 		// Extract poster
@@ -181,11 +181,11 @@ func (s *Scraper) extractMostPopularAnimes(doc *goquery.Document, selector strin
 		// Extract title
 		item.Title = strings.TrimSpace(dynamicName.Text())
 
-		// Extract alternative title - check both possible selectors
+		// Extract jname - check both possible selectors
 		if jname, exists := sel.Find(".film-detail .film-name .dynamic-name").Attr("data-jname"); exists {
-			item.AlternativeTitle = strings.TrimSpace(jname)
+			item.JName = strings.TrimSpace(jname)
 		} else if jname, exists := dynamicName.Attr("data-jname"); exists {
-			item.AlternativeTitle = strings.TrimSpace(jname)
+			item.JName = strings.TrimSpace(jname)
 		}
 
 		// Extract poster
