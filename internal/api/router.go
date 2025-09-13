@@ -2,10 +2,11 @@ package api
 
 import (
 	"fmt"
-	"hianime/config"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/ayanrajpoot10/hianime-api/config"
 )
 
 // Router handles HTTP routing for the API

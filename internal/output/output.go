@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"text/tabwriter"
 
-	"hianime/config"
-	"hianime/pkg/models"
+	"github.com/ayanrajpoot10/hianime-api/config"
+	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 )
 
 func OutputData(cfg *config.Config, data any) {

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"hianime/pkg/models"
+	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 
 	"github.com/PuerkitoBio/goquery"
 )

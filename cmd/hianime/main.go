@@ -7,10 +7,10 @@ import (
 	"os"
 	"strconv"
 
-	"hianime/config"
-	"hianime/internal/api"
-	"hianime/internal/output"
-	"hianime/internal/scraper"
+	"github.com/ayanrajpoot10/hianime-api/config"
+	"github.com/ayanrajpoot10/hianime-api/internal/api"
+	"github.com/ayanrajpoot10/hianime-api/internal/output"
+	"github.com/ayanrajpoot10/hianime-api/internal/scraper"
 )
 
 type App struct {

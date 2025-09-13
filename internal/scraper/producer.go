@@ -8,7 +8,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"hianime/pkg/models"
+	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 )
 
 // GetProducerAnimes scrapes anime list from a producer page

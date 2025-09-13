@@ -1,4 +1,4 @@
-module hianime
+module github.com/ayanrajpoot10/hianime-api
 
 go 1.24.4
 

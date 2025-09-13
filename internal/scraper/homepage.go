@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"hianime/pkg/models"
+	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 
 	"github.com/PuerkitoBio/goquery"
 )

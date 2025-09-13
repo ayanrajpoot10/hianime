@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"hianime/config"
-	"hianime/pkg/httpclient"
-	"hianime/pkg/models"
+	"github.com/ayanrajpoot10/hianime-api/config"
+	"github.com/ayanrajpoot10/hianime-api/pkg/httpclient"
+	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 
 	"github.com/PuerkitoBio/goquery"
 )

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"hianime/internal/scraper"
-	"hianime/pkg/models"
+	"github.com/ayanrajpoot10/hianime-api/internal/scraper"
+	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 )
 
 //go:embed templates/index.html

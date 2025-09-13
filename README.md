@@ -32,16 +32,10 @@
 
 ### Installation
 
-1. Clone the repository:
+ Install the CLI using `go install` (recommended):
 ```bash
-git clone https://github.com/ayanrajpoot10/hianime
-cd hianime
-```
-
-2. Build the project:
-```bash
-# Build CLI tool
-go build -o hianime ./cmd/hianime
+# Installs the `hianime` binary into your $GOBIN (or $GOPATH/bin)
+go install github.com/ayanrajpoot10/hianime-api/cmd/hianime@latest
 ```
 
 ## 📖 Usage
