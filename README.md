@@ -45,13 +45,13 @@ go install github.com/ayanrajpoot10/hianime-api/cmd/hianime@latest
 Start the API server:
 ```bash
 # Using the main binary
-./hianime serve
+hianime serve
 
 # Or directly with Go
 go run main.go serve
 
 # Custom port
-./hianime serve --port 3030
+hianime serve --port 3030
 ```
 
 The API will be available at `http://localhost:3030` with documentation at the root URL.
@@ -61,36 +61,53 @@ The API will be available at `http://localhost:3030` with documentation at the r
 The CLI tool provides direct access to scraping functions:
 
 ```bash
-# Get homepage content
-./hianime home
+# Start the API server
+hianime serve
 
-# Search for anime
-./hianime search "death note"
+# Get homepage content
+hianime home
+
+# Search for anime (with optional page)
+hianime search "death note" 1
 
 # Get anime details
-./hianime anime "death-note-60"
+hianime anime "death-note-60"
+
+# Get anime qtip info (short metadata)
+hianime qtip "death-note-60"
 
 # Get episode list
-./hianime episodes "death-note-60"
+hianime episodes "death-note-60"
 
 # Get anime by category
-./hianime list most-popular
+hianime list most-popular 1
 
 # Get anime by genre
-./hianime genre action
+hianime genre action 1
+
+# A-Z listing
+hianime azlist A 1
 
 # Get search suggestions
-./hianime suggestions "one piece"
+hianime suggestions "one piece"
 
 # Get available servers for an episode
-./hianime servers "one-piece-100::ep=1"
+hianime servers "one-piece-100::ep=1"
 
-# Get streaming links
-./hianime stream "one-piece-100::ep=1" sub HD-1
+# Get streaming links (type: sub|dub, server name)
+hianime stream "one-piece-100::ep=1" sub HD-1
 
-# Output formats
-./hianime home --format table
-./hianime search "naruto" --format csv --output results.csv
+# Schedule/next-episode
+hianime schedule "2024-01-15" -330
+hianime next-episode "death-note-60"
+
+# Producer/studio listing
+hianime producer "Studio Ghibli" 1
+
+# Output formats and flags
+hianime home --format table
+hianime search "naruto" --format csv --output results.csv
+hianime --help
 ```
 
 ## 🔌 API Endpoints
@@ -111,9 +128,15 @@ http://localhost:3030/api
 | GET | `/episodes/{id}` | Episode list |
 | GET | `/animes/{category}?page={page}` | Anime by category |
 | GET | `/genre/{genre}?page={page}` | Anime by genre |
+| GET | `/azlist/{sortOption}?page={page}` | A-Z listing (sort option: A-Z or all) |
 | GET | `/servers?id={episodeId}` | Available servers |
 | GET | `/stream?id={episodeId}&type={sub\|dub}&server={name}` | **Streaming links** |
+| GET | `/schedule?date={YYYY-MM-DD}&tzOffset={offset}` | Estimated schedule for a date |
+| GET | `/next-episode/{id}` | Next episode schedule for an anime |
+| GET | `/producer/{producer-name}?page={page}` | Anime list by producer/studio |
+| GET | `/qtip/{id}` | Short / quick info for an anime |
 | GET | `/health` | Health check |
+| GET | `/` | API documentation root (HTML) |
 
 
 ### Example API Requests
