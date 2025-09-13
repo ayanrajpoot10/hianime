@@ -1,4 +1,4 @@
-package scraper
+package decrypt
 
 import (
 	"crypto/aes"
@@ -65,8 +65,8 @@ func aesDecrypt(encrypted, passphrase string) (string, error) {
 	return string(result), nil
 }
 
-// Simple AES decryption for cases where data is already properly formatted
-func simpleAESDecrypt(encrypted, key string) (string, error) {
+// SimpleAESDecrypt performs simple AES decryption for cases where data is already properly formatted
+func SimpleAESDecrypt(encrypted, key string) (string, error) {
 	// Remove any whitespace
 	key = strings.TrimSpace(key)
 

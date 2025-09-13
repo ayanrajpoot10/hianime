@@ -1,4 +1,4 @@
-package scraper
+package decrypt
 
 import (
 	"encoding/json"
@@ -8,19 +8,36 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ayanrajpoot10/hianime-api/config"
+	"github.com/ayanrajpoot10/hianime-api/pkg/httpclient"
+
 	"github.com/PuerkitoBio/goquery"
 )
 
-// extractToken extracts various tokens and parameters from HTML pages
-func (s *Scraper) extractToken(url string) (string, error) {
+// TokenExtractor handles token extraction functionality
+type TokenExtractor struct {
+	client *httpclient.Client
+	config *config.Config
+}
+
+// NewTokenExtractor creates a new token extractor
+func NewTokenExtractor(client *httpclient.Client, config *config.Config) *TokenExtractor {
+	return &TokenExtractor{
+		client: client,
+		config: config,
+	}
+}
+
+// ExtractToken extracts various tokens and parameters from HTML pages
+func (te *TokenExtractor) ExtractToken(url string) (string, error) {
 	// Rate limiting
-	time.Sleep(s.config.RateLimit)
+	time.Sleep(te.config.RateLimit)
 
 	headers := map[string]string{
-		"Referer": s.config.BaseURL + "/",
+		"Referer": te.config.BaseURL + "/",
 	}
 
-	resp, err := s.client.GetWithHeaders(url, headers)
+	resp, err := te.client.GetWithHeaders(url, headers)
 	if err != nil {
 		return "", fmt.Errorf("failed to make request: %w", err)
 	}
