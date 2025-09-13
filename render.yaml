@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: hianime-api
+    env: go
+    plan: free
+    branch: main
+    buildCommand: go build -tags netgo -ldflags "-s -w" -o app ./cmd/hianime
+    startCommand: ./app serve
+    envVars:
+      - key: PORT
+        value: 3030
+      - key: GO111MODULE
+        value: "on"
+      - key: CGO_ENABLED
+        value: "0"

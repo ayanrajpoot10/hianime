@@ -38,6 +38,12 @@
 go install github.com/ayanrajpoot10/hianime-api/cmd/hianime@latest
 ```
 
+## Deploy to Render
+
+Deploy this API instantly to Render with one click:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ayanrajpoot10/hianime)
+
 ## 📖 Usage
 
 ### API Server
