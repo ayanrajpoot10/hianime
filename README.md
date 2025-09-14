@@ -24,7 +24,6 @@
 - **Streaming Links**: Fetch streaming links from multiple servers
 - **Search & Discovery**: Search anime with suggestions and pagination
 - **Comprehensive Data**: Anime details, episodes, servers, and genres
-- **Multiple Output Formats**: JSON, Table, and CSV output support
 - **Comprehensive Coverage**: All major hianime.to endpoints
 - **Configurable**: Environment variables and command-line flags
 - **CORS Support**: Cross-origin resource sharing for web applications
@@ -100,10 +99,6 @@ hianime stream "one-piece-100::ep=1" sub HD-1
 # Schedule/next-episode
 hianime schedule "2024-01-15" -330
 hianime next-episode "death-note-60"
-
-# Output formats and flags
-hianime home --format table
-hianime search "naruto" --format csv --output results.csv
 ```
 
 ### 🌐 API Server
@@ -206,7 +201,7 @@ All API responses follow this structure:
           "eps": 11
         }
       },
-    [...]
+      [...]
     ],
     "trending": [...],
     "latestCompleted": [...],

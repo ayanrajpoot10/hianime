@@ -18,7 +18,6 @@ The HiAnime Scraper supports both CLI commands and a REST API server. All CLI co
 
 All CLI commands support these global options:
 
-- `--format <json|table|csv>` - Output format (default: json)
 - `--output <file>` - Output to file instead of stdout
 - `--verbose` - Enable verbose logging
 - `--port <port>` - Server port for API mode (default: 3030)
@@ -64,9 +63,6 @@ hianime homepage [options]  # alias
 # Get homepage in JSON format
 hianime home
 
-# Get homepage in table format
-hianime home --format table
-
 # Save homepage to file
 hianime home --output homepage.json
 
@@ -93,11 +89,8 @@ hianime search "death note"
 # Search with pagination
 hianime search "naruto" 2
 
-# Search and save to CSV
-hianime search "one piece" 1 --format csv --output search_results.csv
-
-# Search with table output
-hianime search "attack on titan" --format table
+# Search and save to output
+hianime search "one piece" 1 --output search_results.json
 ```
 
 #### Get Search Suggestions
@@ -114,8 +107,8 @@ hianime suggest <keyword> [options]  # alias
 # Get suggestions for partial search
 hianime suggestions "demon"
 
-# Get suggestions in table format
-hianime suggestions "dragon" --format table
+# Save suggestions to output
+hianime suggestions "dragon" --output suggestion.json
 ```
 
 ### 4. Anime Details Commands
@@ -133,9 +126,6 @@ hianime details <anime-id> [options]  # alias
 ```bash
 # Get anime details
 hianime anime "death-note-60"
-
-# Get details in table format
-hianime anime "one-piece-100" --format table
 
 # Save details to file
 hianime anime "naruto-1" --output anime_details.json
@@ -155,9 +145,6 @@ hianime qtip <anime-id> [options]
 ```bash
 # Get qtip info
 hianime qtip "death-note-60"
-
-# Get qtip info in table format
-hianime qtip "one-piece-100" --format table
 ```
 
 ### 5. Episode Commands
@@ -174,9 +161,6 @@ hianime episodes <anime-id> [options]
 ```bash
 # Get episode list
 hianime episodes "death-note-60"
-
-# Get episodes in CSV format
-hianime episodes "one-piece-100" --format csv --output episodes.csv
 ```
 
 ### 6. Listing Commands
@@ -215,11 +199,8 @@ hianime list most-popular
 # Get top airing anime with pagination
 hianime list top-airing 2
 
-# Get movies in table format
-hianime list movie --format table
-
-# Save completed anime to CSV
-hianime list completed 1 --format csv --output completed_anime.csv
+# Save completed anime to output
+hianime list completed 1 --output completed_anime.json
 ```
 
 #### Get Anime by Genre
@@ -239,8 +220,8 @@ hianime genre action
 # Get romance anime with pagination
 hianime genre romance 2
 
-# Get comedy anime in table format
-hianime genre comedy --format table
+# Save comedy anime in output
+hianime genre comedy --output comedy_anime.json
 ```
 
 #### Get A-Z Sorted List
@@ -266,9 +247,6 @@ hianime azlist A
 # Get anime starting with 'D' on page 2
 hianime azlist D 2
 
-# Get all anime in table format
-hianime azlist all --format table
-
 # Get other (non-alphabetic) titles
 hianime azlist other
 ```
@@ -291,9 +269,6 @@ hianime producer "Studio Ghibli"
 
 # Get anime from Madhouse with pagination
 hianime producer "Madhouse" 2
-
-# Get producer anime in table format
-hianime producer "Toei Animation" --format table
 ```
 
 ### 8. Streaming Commands
@@ -310,9 +285,6 @@ hianime servers <episode-id> [options]
 ```bash
 # Get servers for episode
 hianime servers "death-note-60::ep=1"
-
-# Get servers in table format
-hianime servers "one-piece-100::ep=1" --format table
 ```
 
 #### Get Stream Links
@@ -358,9 +330,6 @@ hianime schedule "2024-01-15" 0
 
 # Get schedule with JST timezone
 hianime schedule "2024-01-15" -540
-
-# Get schedule in table format
-hianime schedule "2024-01-15" --format table
 ```
 
 #### Get Next Episode Schedule
@@ -376,9 +345,6 @@ hianime next <anime-id> [options]  # alias
 ```bash
 # Get next episode schedule
 hianime next-episode "one-piece-100"
-
-# Get next episode info in table format
-hianime next "attack-on-titan-112" --format table
 ```
 
 ### 10. Help Commands
@@ -683,21 +649,29 @@ curl "http://localhost:3030/api/next-episode/one-piece-100"
       {
         "id": "anime-id",
         "title": "Anime Title",
+        "jname": "Japanese Title",
         "poster": "image-url",
+        "rank": 1,
+        "type": "TV",
+        "quality": "HD",
+        "duration": "24m",
+        "aired": "Jul 6, 2025",
         "description": "Anime description",
         "episodes": {
           "sub": 12,
           "dub": 12,
-          "eps": 12
+          "eps": 12,
         },
-        "type": "TV",
-        "rating": "PG-13",
-        "quality": "HD"
-      }
+      },
+      [...]
     ],
     "trending": [...],
+    "latestCompleted": [...],
+    "latestUpdated": [...],
     "topAiring": [...],
     "mostPopular": [...],
+    "mostFavorite": [...],
+    "topUpcoming": [...],
     "top10": {
       "today": [...],
       "week": [...],
@@ -860,18 +834,6 @@ hianime anime "kimetsu-no-yaiba-55"
 hianime episodes "kimetsu-no-yaiba-55"
 ```
 
-#### Output Formatting
-```bash
-# JSON output (default)
-hianime search "naruto" --format json
-
-# Table output
-hianime list most-popular --format table
-
-# CSV output
-hianime genre action --format csv --output action_anime.csv
-```
-
 #### Advanced Usage
 ```bash
 # Get streaming servers and links
@@ -1014,8 +976,8 @@ CLI flags override environment variables and configuration defaults:
 # Override port and enable verbose mode
 hianime serve --port 8080 --verbose
 
-# Override output format and file
-hianime search "anime" --format csv --output results.csv
+# Override output
+hianime search "anime" --output results.json
 ```
 
 ### Rate Limiting

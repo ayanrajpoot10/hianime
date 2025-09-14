@@ -1,21 +1,41 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/ayanrajpoot10/hianime-api/config"
 	"github.com/ayanrajpoot10/hianime-api/internal/api"
-	"github.com/ayanrajpoot10/hianime-api/internal/output"
 	"github.com/ayanrajpoot10/hianime-api/internal/scraper"
 )
 
 type App struct {
 	scraper *scraper.Scraper
 	config  *config.Config
+}
+
+// outputJSON prints data in pretty JSON format or saves to file if output flag is set
+func (a *App) outputJSON(data any) {
+	output, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		log.Fatalf("Failed to marshal JSON: %v", err)
+	}
+
+	if a.config.OutputFile != "" {
+		if err := os.WriteFile(a.config.OutputFile, output, 0644); err != nil {
+			log.Fatalf("Failed to write to file: %v", err)
+		}
+		if a.config.Verbose {
+			fmt.Printf("Output written to %s\n", a.config.OutputFile)
+		}
+	} else {
+		fmt.Println(string(output))
+	}
 }
 
 func main() {
@@ -183,23 +203,40 @@ func setupApp() (*App, string, []string) {
 	flagSet := flag.NewFlagSet(command, flag.ExitOnError)
 
 	// Define flags
-	format := flagSet.String("format", cfg.OutputFormat, "Output format (json, table, csv)")
 	output := flagSet.String("output", cfg.OutputFile, "Output file path")
 	verbose := flagSet.Bool("verbose", cfg.Verbose, "Enable verbose logging")
 	port := flagSet.String("port", cfg.Port, "Port to run the server on")
 	host := flagSet.String("host", cfg.Host, "Host to bind the server to")
 
 	// Parse flags starting from the third argument
-	flagSet.Parse(os.Args[2:])
+	// Use a custom approach to handle flags anywhere in arguments
+	var args []string
+	var flagArgs []string
+
+	// Separate flags from positional arguments
+	remainingArgs := os.Args[2:]
+	for i := 0; i < len(remainingArgs); i++ {
+		arg := remainingArgs[i]
+		if strings.HasPrefix(arg, "--") || strings.HasPrefix(arg, "-") {
+			flagArgs = append(flagArgs, arg)
+			// Check if this flag has a value (next argument doesn't start with -)
+			if i+1 < len(remainingArgs) && !strings.HasPrefix(remainingArgs[i+1], "-") {
+				i++
+				flagArgs = append(flagArgs, remainingArgs[i])
+			}
+		} else {
+			args = append(args, arg)
+		}
+	}
+
+	// Parse the separated flags
+	flagSet.Parse(flagArgs)
 
 	// Apply parsed flags to config
-	cfg.OutputFormat = *format
 	cfg.OutputFile = *output
 	cfg.Verbose = *verbose
 	cfg.Port = *port
 	cfg.Host = *host
-
-	args := flagSet.Args()
 
 	s := scraper.New(cfg)
 
@@ -230,7 +267,7 @@ func (a *App) scrapHomepage() {
 		log.Fatalf("Failed to scrape homepage: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) searchAnime(keyword string, page int) {
@@ -243,7 +280,7 @@ func (a *App) searchAnime(keyword string, page int) {
 		log.Fatalf("Failed to search anime: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getAnimeDetails(animeID string) {
@@ -256,7 +293,7 @@ func (a *App) getAnimeDetails(animeID string) {
 		log.Fatalf("Failed to get anime details: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getAnimeQtipInfo(animeID string) {
@@ -269,7 +306,7 @@ func (a *App) getAnimeQtipInfo(animeID string) {
 		log.Fatalf("Failed to get anime qtip info: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getEpisodes(animeID string) {
@@ -282,7 +319,7 @@ func (a *App) getEpisodes(animeID string) {
 		log.Fatalf("Failed to get episodes: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getAnimeList(category string, page int) {
@@ -295,7 +332,7 @@ func (a *App) getAnimeList(category string, page int) {
 		log.Fatalf("Failed to get anime list: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getGenreList(genre string, page int) {
@@ -308,7 +345,7 @@ func (a *App) getGenreList(genre string, page int) {
 		log.Fatalf("Failed to get genre list: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getAZList(sortOption string, page int) {
@@ -321,7 +358,7 @@ func (a *App) getAZList(sortOption string, page int) {
 		log.Fatalf("Failed to get A-Z list: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getProducerAnimes(producerName string, page int) {
@@ -334,7 +371,7 @@ func (a *App) getProducerAnimes(producerName string, page int) {
 		log.Fatalf("Failed to get producer animes: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getServers(episodeID string) {
@@ -347,7 +384,7 @@ func (a *App) getServers(episodeID string) {
 		log.Fatalf("Failed to get servers: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getStreamLinks(episodeID, serverType, serverName string) {
@@ -360,7 +397,7 @@ func (a *App) getStreamLinks(episodeID, serverType, serverName string) {
 		log.Fatalf("Failed to get stream links: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getSuggestions(keyword string) {
@@ -373,7 +410,7 @@ func (a *App) getSuggestions(keyword string) {
 		log.Fatalf("Failed to get suggestions: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getEstimatedSchedule(date string, tzOffset int) {
@@ -386,7 +423,7 @@ func (a *App) getEstimatedSchedule(date string, tzOffset int) {
 		log.Fatalf("Failed to get estimated schedule: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func (a *App) getNextEpisodeSchedule(animeID string) {
@@ -399,7 +436,7 @@ func (a *App) getNextEpisodeSchedule(animeID string) {
 		log.Fatalf("Failed to get next episode schedule: %v", err)
 	}
 
-	output.OutputData(a.config, data)
+	a.outputJSON(data)
 }
 
 func printUsage() {
@@ -433,7 +470,6 @@ CATEGORIES:
     tv, ova, ona, special, events
 
 OPTIONS:
-    --format <json|table|csv>     Output format (default: json)
     --output <file>               Output to file
     --verbose                     Enable verbose logging
     --port <port>                 Server port (default: 3030)
@@ -441,14 +477,12 @@ OPTIONS:
 
 EXAMPLES:
     hianime serve
-    hianime home --format table
+    hianime home --output home.json
     hianime search "death note" 1
     hianime anime "death-note-60"
     hianime qtip "death-note-60"
-    hianime schedule "2024-01-15" -330
-    hianime next-episode "death-note-60"
+    hianime schedule "2025-09-15" -330
     hianime list most-popular 1
-    hianime genre action 1 --output anime.csv --format csv
     hianime azlist A 1`)
 }
 

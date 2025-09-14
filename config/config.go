@@ -22,7 +22,6 @@ type Config struct {
 	MaxRetries int           `json:"max_retries"`
 
 	// CLI configuration
-	OutputFormat string `json:"output_format"`
 	OutputFile   string `json:"output_file"`
 	Verbose      bool   `json:"verbose"`
 
@@ -47,7 +46,6 @@ func DefaultConfig() *Config {
 		Timeout:        30 * time.Second,
 		RateLimit:      500 * time.Millisecond,
 		MaxRetries:     3,
-		OutputFormat:   "json",
 		Verbose:        true,
 		EnableCORS:     true,
 		AllowedOrigins: []string{"*"},
@@ -90,10 +88,6 @@ func (c *Config) LoadFromEnv() {
 		if maxRetries, err := strconv.Atoi(maxRetriesStr); err == nil {
 			c.MaxRetries = maxRetries
 		}
-	}
-
-	if outputFormat := os.Getenv("OUTPUT_FORMAT"); outputFormat != "" {
-		c.OutputFormat = outputFormat
 	}
 
 	if verboseStr := os.Getenv("VERBOSE"); verboseStr != "" {
