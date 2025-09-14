@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 
@@ -14,8 +13,6 @@ import (
 
 // AnimeDetails scrapes detailed information about a specific anime
 func (s *Scraper) AnimeDetails(animeID string) (*models.AnimeDetailResponse, error) {
-	time.Sleep(s.config.RateLimit)
-
 	url := fmt.Sprintf("%s/%s", s.config.BaseURL, animeID)
 
 	resp, err := s.client.Get(url)

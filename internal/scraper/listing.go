@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 
@@ -16,9 +15,6 @@ func (s *Scraper) AnimeList(category string, page int) (*models.ListPageResponse
 	if page < 1 {
 		page = 1
 	}
-
-	// Rate limiting
-	time.Sleep(s.config.RateLimit)
 
 	var url string
 	switch category {
@@ -64,9 +60,6 @@ func (s *Scraper) GenreList(genre string, page int) (*models.ListPageResponse, e
 	if page < 1 {
 		page = 1
 	}
-
-	// Rate limiting
-	time.Sleep(s.config.RateLimit)
 
 	url := fmt.Sprintf("%s/genre/%s?page=%d", s.config.BaseURL, strings.ToLower(genre), page)
 

@@ -26,7 +26,6 @@
 - **Comprehensive Data**: Anime details, episodes, servers, and genres
 - **Multiple Output Formats**: JSON, Table, and CSV output support
 - **Comprehensive Coverage**: All major hianime.to endpoints
-- **Rate Limiting**: Built-in request throttling
 - **Configurable**: Environment variables and command-line flags
 - **CORS Support**: Cross-origin resource sharing for web applications
 
@@ -240,5 +239,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 🙏 Acknowledgments
 
 - Built with [goquery](https://github.com/PuerkitoBio/goquery) for HTML parsing
-- Inspired by the anime community's need for accessible data
 - Ported from the JavaScript project [yahyaMomin/hianime-API](https://github.com/yahyaMomin/hianime-API). This repository ports the original JS project to Go and adds additional features.

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 
@@ -17,9 +16,6 @@ func (s *Scraper) Search(keyword string, page int) (*models.SearchResponse, erro
 	if page < 1 {
 		page = 1
 	}
-
-	// Rate limiting
-	time.Sleep(s.config.RateLimit)
 
 	url := fmt.Sprintf("%s/search?keyword=%s&page=%d", s.config.BaseURL, strings.ReplaceAll(keyword, " ", "+"), page)
 
@@ -53,9 +49,6 @@ func (s *Scraper) Search(keyword string, page int) (*models.SearchResponse, erro
 
 // Suggestions scrapes search suggestions based on keyword
 func (s *Scraper) Suggestions(keyword string) (*models.SearchResponse, error) {
-	// Rate limiting
-	time.Sleep(s.config.RateLimit)
-
 	url := fmt.Sprintf("%s/ajax/search/suggest?keyword=%s", s.config.BaseURL, strings.ReplaceAll(keyword, " ", "+"))
 
 	headers := map[string]string{

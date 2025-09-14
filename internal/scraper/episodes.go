@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/ayanrajpoot10/hianime-api/pkg/models"
 
@@ -15,8 +14,6 @@ import (
 
 // Episodes scrapes episode list for a specific anime
 func (s *Scraper) Episodes(animeID string) (*models.EpisodesResponse, error) {
-	time.Sleep(s.config.RateLimit)
-
 	parts := strings.Split(animeID, "-")
 	if len(parts) == 0 {
 		return nil, fmt.Errorf("invalid anime ID format")

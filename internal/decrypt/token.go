@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/ayanrajpoot10/hianime-api/config"
 	"github.com/ayanrajpoot10/hianime-api/pkg/httpclient"
@@ -30,9 +29,6 @@ func NewTokenExtractor(client *httpclient.Client, config *config.Config) *TokenE
 
 // ExtractToken extracts various tokens and parameters from HTML pages
 func (te *TokenExtractor) ExtractToken(url string) (string, error) {
-	// Rate limiting
-	time.Sleep(te.config.RateLimit)
-
 	headers := map[string]string{
 		"Referer": te.config.BaseURL + "/",
 	}

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/ayanrajpoot10/hianime-api/internal/decrypt"
 	"github.com/ayanrajpoot10/hianime-api/pkg/models"
@@ -16,9 +15,6 @@ import (
 
 // Servers scrapes available servers for a specific episode
 func (s *Scraper) Servers(episodeID string) (*models.ServersResponse, error) {
-	// Rate limiting
-	time.Sleep(s.config.RateLimit)
-
 	// Extract episode number from ID
 	if !strings.Contains(episodeID, "::ep=") {
 		return nil, fmt.Errorf("invalid episode ID format")
@@ -115,9 +111,6 @@ func (s *Scraper) Servers(episodeID string) (*models.ServersResponse, error) {
 
 // StreamLinks scrapes streaming links for a specific episode and server using megacloud decryption
 func (s *Scraper) StreamLinks(episodeID, serverType, serverName string) (*models.StreamResponse, error) {
-	// Rate limiting
-	time.Sleep(s.config.RateLimit)
-
 	// First get the servers to find the server ID
 	servers, err := s.Servers(episodeID)
 	if err != nil {
