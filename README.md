@@ -7,11 +7,18 @@
 <h1 align="center">HiAnime API</h1>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Go-1.21+-blue" alt="Go Version">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+  <img src="https://img.shields.io/github/stars/ayanrajpoot10/hianime?style=social" alt="GitHub Stars">
+</p>
+
+<p align="center">
   A powerful Go-based scraper for hianime.to, providing both a REST API and CLI for easy data access.
 </p>
 
 ## ✨ Features
 
+- **Built with Go**: High-performance Go application for efficient scraping
 - **REST API Server**: Full-featured HTTP API with JSON responses
 - **CLI Tool**: Command-line interface for direct scraping
 - **Streaming Links**: Fetch streaming links from multiple servers
@@ -25,51 +32,45 @@
 
 ## 🚀 Quick Start
 
-### Prerequisites
+Start using HiAnime API quickly, either locally or in the cloud.
 
-- Go 1.21 or higher
-- Internet connection
+### 🛠️ Install & Run Locally
 
-### Installation
+Install using `go install`:
 
- Install the CLI using `go install` (recommended):
 ```bash
-# Installs the `hianime` binary into your $GOBIN (or $GOPATH/bin)
 go install github.com/ayanrajpoot10/hianime-api/cmd/hianime@latest
 ```
 
-## Deploy to Render
+Check the available commands and options:
 
-Deploy this API instantly to Render with one click:
+```bash
+hianime -h
+```
+
+---
+
+### ☁️ Deploy to Render
+
+Deploy your API to Render instantly with a single click:
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ayanrajpoot10/hianime)
 
+**Notes for Render deployment:**
+
+* Render automatically builds your Go project.
+* The service will start on default configurations.
+* Environment variables can be configured in the Render dashboard as needed.
+
 ## 📖 Usage
 
-### API Server
+> 📚 **Complete Documentation**: For detailed usage examples, all commands, and extended API reference, see **[USES.md](./USES.md)**
 
-Start the API server:
-```bash
-# Using the main binary
-hianime serve
-
-# Or directly with Go
-go run main.go serve
-
-# Custom port
-hianime serve --port 3030
-```
-
-The API will be available at `http://localhost:3030` with documentation at the root URL.
-
-### CLI Tool
+### 💻 CLI Tool
 
 The CLI tool provides direct access to scraping functions:
 
 ```bash
-# Start the API server
-hianime serve
-
 # Get homepage content
 hianime home
 
@@ -79,9 +80,6 @@ hianime search "death note" 1
 # Get anime details
 hianime anime "death-note-60"
 
-# Get anime qtip info (short metadata)
-hianime qtip "death-note-60"
-
 # Get episode list
 hianime episodes "death-note-60"
 
@@ -90,9 +88,6 @@ hianime list most-popular 1
 
 # Get anime by genre
 hianime genre action 1
-
-# A-Z listing
-hianime azlist A 1
 
 # Get search suggestions
 hianime suggestions "one piece"
@@ -107,23 +102,32 @@ hianime stream "one-piece-100::ep=1" sub HD-1
 hianime schedule "2024-01-15" -330
 hianime next-episode "death-note-60"
 
-# Producer/studio listing
-hianime producer "Studio Ghibli" 1
-
 # Output formats and flags
 hianime home --format table
 hianime search "naruto" --format csv --output results.csv
-hianime --help
 ```
+
+### 🌐 API Server
+
+Start the API server:
+```bash
+# Using the main binary
+hianime serve
+
+# Custom port
+hianime serve --port 3030
+```
+
+The API will be available at `http://localhost:3030` with documentation at the root URL.
 
 ## 🔌 API Endpoints
 
-### Base URL
+### 🔗 Base URL
 ```
 http://localhost:3030/api
 ```
 
-### Available Endpoints
+### 📋 Available Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -145,7 +149,7 @@ http://localhost:3030/api
 | GET | `/` | API documentation root (HTML) |
 
 
-### Example API Requests
+### 🔍 Example API Requests
 
 ```bash
 # Get homepage
@@ -164,22 +168,6 @@ curl "http://localhost:3030/api/episodes/death-note-60"
 curl "http://localhost:3030/api/animes/most-popular?page=1"
 ```
 
-## ⚙️ Configuration Options
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PORT` | `3030` | Server port |
-| `HOST` | `0.0.0.0` | Server host |
-| `BASE_URL` | `https://hianime.to` | Target website URL |
-| `TIMEOUT` | `30s` | HTTP request timeout |
-| `RATE_LIMIT` | `500ms` | Rate limit between requests |
-| `OUTPUT_FORMAT` | `json` | Default CLI output format |
-| `VERBOSE` | `false` | Enable verbose logging |
-| `ENABLE_CORS` | `true` | Enable CORS for API |
-
-
 ## 🔄 API Response Format
 
 All API responses follow this structure:
@@ -195,7 +183,7 @@ All API responses follow this structure:
 }
 ```
 
-### Example Homepage Response
+### 📊 Example Homepage Response
 
 ```json
 {
@@ -203,20 +191,31 @@ All API responses follow this structure:
   "data": {
     "spotlight": [
       {
-        "id": "one-piece-100",
-        "title": "One Piece",
-        "alternative_title": "ワンピース",
+        "id": "my-dress-up-darling-season-2-19794",
+        "title": "My Dress-Up Darling Season 2",
+        "jname": "Sono Bisque Doll wa Koi wo Suru Season 2",
         "poster": "https://...",
         "rank": 1,
         "type": "TV",
+        "quality": "HD",
+        "duration": "24m",
+        "aired": "Jul 6, 2025",
+        "description": "The second season of Sono Bisque Doll wa Koi wo Suru.\n\nWhen Marin Kitagawa and Wakana Gojo met, they grew close over their love for cosplay. Through interacting with classmates and making new cosplay friends, Marin and Wakana’s world keeps growing. New developments arise as Marin’s love for Wakana continues to be filled with endless excitement. In their ever-expanding world, Marin and Wakana’s story of cosplay and thrills continues!",
         "episodes": {
-          "sub": 1130,
-          "dub": 1122,
-          "eps": 1130
+          "sub": 11,
+          "dub": 9,
+          "eps": 11
         }
-      }
+      },
+    [...]
     ],
     "trending": [...],
+    "latestCompleted": [...],
+    "latestUpdated": [...],
+    "topAiring": [...],
+    "mostPopular": [...],
+    "mostFavorite": [...],
+    "topUpcoming": [...],
     "top10": {
       "today": [...],
       "week": [...],
@@ -232,7 +231,7 @@ This project is for educational purposes only. It demonstrates web scraping tech
 
 ## 📝 License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
 
