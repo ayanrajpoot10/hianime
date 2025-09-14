@@ -53,7 +53,7 @@ hianime -h
 
 Deploy your API to Render instantly with a single click:
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ayanrajpoot10/hianime)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ayanrajpoot10/hianime-api)
 
 **Notes for Render deployment:**
 
