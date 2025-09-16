@@ -54,8 +54,8 @@ func (h *Handler) writeError(w http.ResponseWriter, statusCode int, err error) {
 }
 
 // Homepage handles GET /api/home
-func (h *Handler) Homepage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) Homepage(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
@@ -70,14 +70,14 @@ func (h *Handler) Homepage(w http.ResponseWriter, r *http.Request) {
 }
 
 // AnimeDetails handles GET /api/anime/{id}
-func (h *Handler) AnimeDetails(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) AnimeDetails(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	// Extract anime ID from URL path
-	path := r.URL.Path
+	path := req.URL.Path
 	animeID := path[len("/api/anime/"):]
 
 	if animeID == "" {
@@ -95,14 +95,14 @@ func (h *Handler) AnimeDetails(w http.ResponseWriter, r *http.Request) {
 }
 
 // AnimeQtipInfo handles GET /api/qtip/{id}
-func (h *Handler) AnimeQtipInfo(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) AnimeQtipInfo(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	// Extract anime ID from URL path
-	path := r.URL.Path
+	path := req.URL.Path
 	animeID := path[len("/api/qtip/"):]
 
 	if animeID == "" {
@@ -120,13 +120,13 @@ func (h *Handler) AnimeQtipInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 // EstimatedSchedule handles GET /api/schedule
-func (h *Handler) EstimatedSchedule(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) EstimatedSchedule(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
-	query := r.URL.Query()
+	query := req.URL.Query()
 	date := query.Get("date")
 	if date == "" {
 		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
@@ -150,14 +150,14 @@ func (h *Handler) EstimatedSchedule(w http.ResponseWriter, r *http.Request) {
 }
 
 // NextEpisodeSchedule handles GET /api/next-episode/{id}
-func (h *Handler) NextEpisodeSchedule(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) NextEpisodeSchedule(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	// Extract anime ID from URL path
-	path := r.URL.Path
+	path := req.URL.Path
 	animeID := path[len("/api/next-episode/"):]
 
 	if animeID == "" {
@@ -175,13 +175,13 @@ func (h *Handler) NextEpisodeSchedule(w http.ResponseWriter, r *http.Request) {
 }
 
 // Search handles GET /api/search
-func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) Search(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
-	query := r.URL.Query()
+	query := req.URL.Query()
 	keyword := query.Get("keyword")
 	if keyword == "" {
 		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
@@ -205,13 +205,13 @@ func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
 }
 
 // Suggestions handles GET /api/suggestion
-func (h *Handler) Suggestions(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) Suggestions(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
-	query := r.URL.Query()
+	query := req.URL.Query()
 	keyword := query.Get("keyword")
 	if keyword == "" {
 		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
@@ -228,14 +228,14 @@ func (h *Handler) Suggestions(w http.ResponseWriter, r *http.Request) {
 }
 
 // Episodes handles GET /api/episodes/{id}
-func (h *Handler) Episodes(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) Episodes(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	// Extract anime ID from URL path
-	path := r.URL.Path
+	path := req.URL.Path
 	animeID := path[len("/api/episodes/"):]
 
 	if animeID == "" {
@@ -253,13 +253,13 @@ func (h *Handler) Episodes(w http.ResponseWriter, r *http.Request) {
 }
 
 // Servers handles GET /api/servers
-func (h *Handler) Servers(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) Servers(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
-	query := r.URL.Query()
+	query := req.URL.Query()
 	episodeID := query.Get("id")
 	if episodeID == "" {
 		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
@@ -276,13 +276,13 @@ func (h *Handler) Servers(w http.ResponseWriter, r *http.Request) {
 }
 
 // Stream handles GET /api/stream
-func (h *Handler) Stream(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) Stream(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
-	query := r.URL.Query()
+	query := req.URL.Query()
 	episodeID := query.Get("id")
 	if episodeID == "" {
 		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
@@ -309,14 +309,14 @@ func (h *Handler) Stream(w http.ResponseWriter, r *http.Request) {
 }
 
 // AnimeList handles GET /api/animes/{category}
-func (h *Handler) AnimeList(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) AnimeList(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	// Extract category from URL path
-	path := r.URL.Path
+	path := req.URL.Path
 	category := path[len("/api/animes/"):]
 
 	if category == "" {
@@ -324,7 +324,7 @@ func (h *Handler) AnimeList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := r.URL.Query()
+	query := req.URL.Query()
 	page := 1
 	if pageStr := query.Get("page"); pageStr != "" {
 		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
@@ -342,14 +342,14 @@ func (h *Handler) AnimeList(w http.ResponseWriter, r *http.Request) {
 }
 
 // GenreList handles GET /api/genre/{genre}
-func (h *Handler) GenreList(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) GenreList(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	// Extract genre from URL path
-	path := r.URL.Path
+	path := req.URL.Path
 	genre := path[len("/api/genre/"):]
 
 	if genre == "" {
@@ -357,7 +357,7 @@ func (h *Handler) GenreList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := r.URL.Query()
+	query := req.URL.Query()
 	page := 1
 	if pageStr := query.Get("page"); pageStr != "" {
 		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
@@ -375,14 +375,14 @@ func (h *Handler) GenreList(w http.ResponseWriter, r *http.Request) {
 }
 
 // AZList handles GET /api/azlist/{sortOption}
-func (h *Handler) AZList(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) AZList(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	// Extract sort option from URL path
-	path := r.URL.Path
+	path := req.URL.Path
 	sortOption := path[len("/api/azlist/"):]
 
 	if sortOption == "" {
@@ -390,7 +390,7 @@ func (h *Handler) AZList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := r.URL.Query()
+	query := req.URL.Query()
 	page := 1
 	if pageStr := query.Get("page"); pageStr != "" {
 		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
@@ -408,14 +408,14 @@ func (h *Handler) AZList(w http.ResponseWriter, r *http.Request) {
 }
 
 // Producer handles GET /api/producer/{producer-name}
-func (h *Handler) Producer(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) Producer(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	// Extract producer name from URL path
-	path := r.URL.Path
+	path := req.URL.Path
 	producerName := path[len("/api/producer/"):]
 
 	if producerName == "" {
@@ -423,7 +423,7 @@ func (h *Handler) Producer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := r.URL.Query()
+	query := req.URL.Query()
 	page := 1
 	if pageStr := query.Get("page"); pageStr != "" {
 		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
@@ -441,8 +441,8 @@ func (h *Handler) Producer(w http.ResponseWriter, r *http.Request) {
 }
 
 // Health handles GET /api/health
-func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) Health(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
@@ -456,8 +456,8 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 }
 
 // Root handles requests to the root path
-func (h *Handler) Root(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) Root(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -468,8 +468,8 @@ func (h *Handler) Root(w http.ResponseWriter, r *http.Request) {
 }
 
 // APIRoot handles requests to the API root path
-func (h *Handler) APIRoot(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+func (h *Handler) APIRoot(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}

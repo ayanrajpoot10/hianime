@@ -24,95 +24,95 @@ func NewRouter(handler *Handler, cfg *config.Config) *Router {
 }
 
 // ServeHTTP implements http.Handler interface
-func (router *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// Enable CORS if configured
-	if router.config.EnableCORS {
+	if r.config.EnableCORS {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-		if r.Method == http.MethodOptions {
+		if req.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
 	}
 
 	// Log request if verbose
-	if router.config.Verbose {
-		log.Printf("%s %s", r.Method, r.URL.Path)
+	if r.config.Verbose {
+		log.Printf("%s %s", req.Method, req.URL.Path)
 	}
 
 	// Route the request
-	router.route(w, r)
+	r.route(w, req)
 }
 
 // route handles the actual routing logic
-func (router *Router) route(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
+func (r *Router) route(w http.ResponseWriter, req *http.Request) {
+	path := req.URL.Path
 
 	switch {
 	// Root endpoints
 	case path == "/":
-		router.handler.Root(w, r)
+		r.handler.Root(w, req)
 	case path == "/health":
-		router.handler.Health(w, r)
+		r.handler.Health(w, req)
 
 	// API endpoints
 	case path == "/api" || path == "/api/":
-		router.handler.APIRoot(w, r)
+		r.handler.APIRoot(w, req)
 	case path == "/api/home":
-		router.handler.Homepage(w, r)
+		r.handler.Homepage(w, req)
 	case path == "/api/search":
-		router.handler.Search(w, r)
+		r.handler.Search(w, req)
 	case path == "/api/suggestion":
-		router.handler.Suggestions(w, r)
+		r.handler.Suggestions(w, req)
 	case path == "/api/servers":
-		router.handler.Servers(w, r)
+		r.handler.Servers(w, req)
 	case path == "/api/stream":
-		router.handler.Stream(w, r)
+		r.handler.Stream(w, req)
 	case path == "/api/schedule":
-		router.handler.EstimatedSchedule(w, r)
+		r.handler.EstimatedSchedule(w, req)
 	case path == "/api/health":
-		router.handler.Health(w, r)
+		r.handler.Health(w, req)
 
 	// Dynamic endpoints with path parameters
 	case strings.HasPrefix(path, "/api/anime/"):
-		router.handler.AnimeDetails(w, r)
+		r.handler.AnimeDetails(w, req)
 	case strings.HasPrefix(path, "/api/qtip/"):
-		router.handler.AnimeQtipInfo(w, r)
+		r.handler.AnimeQtipInfo(w, req)
 	case strings.HasPrefix(path, "/api/next-episode/"):
-		router.handler.NextEpisodeSchedule(w, r)
+		r.handler.NextEpisodeSchedule(w, req)
 	case strings.HasPrefix(path, "/api/episodes/"):
-		router.handler.Episodes(w, r)
+		r.handler.Episodes(w, req)
 	case strings.HasPrefix(path, "/api/animes/"):
-		router.handler.AnimeList(w, r)
+		r.handler.AnimeList(w, req)
 	case strings.HasPrefix(path, "/api/genre/"):
-		router.handler.GenreList(w, r)
+		r.handler.GenreList(w, req)
 	case strings.HasPrefix(path, "/api/azlist/"):
-		router.handler.AZList(w, r)
+		r.handler.AZList(w, req)
 	case strings.HasPrefix(path, "/api/producer/"):
-		router.handler.Producer(w, r)
+		r.handler.Producer(w, req)
 
 	// Not found
 	default:
-		router.handleNotFound(w, r)
+		r.handleNotFound(w, req)
 	}
 }
 
 // handleNotFound handles 404 errors
-func (router *Router) handleNotFound(w http.ResponseWriter, r *http.Request) {
-	router.handler.writeError(w, http.StatusNotFound, fmt.Errorf("endpoint not found: %s", r.URL.Path))
+func (r *Router) handleNotFound(w http.ResponseWriter, req *http.Request) {
+	r.handler.writeError(w, http.StatusNotFound, fmt.Errorf("endpoint not found: %s", req.URL.Path))
 }
 
 // Start starts the HTTP server
-func (router *Router) Start() error {
-	address := fmt.Sprintf("%s:%s", router.config.Host, router.config.Port)
+func (r *Router) Start() error {
+	address := fmt.Sprintf("%s:%s", r.config.Host, r.config.Port)
 
 	server := &http.Server{
 		Addr:         address,
-		Handler:      router,
-		ReadTimeout:  router.config.ReadTimeout,
-		WriteTimeout: router.config.WriteTimeout,
+		Handler:      r,
+		ReadTimeout:  r.config.ReadTimeout,
+		WriteTimeout: r.config.WriteTimeout,
 	}
 
 	log.Printf("🚀 Starting HiAnime Scraper API server on %s", address)
