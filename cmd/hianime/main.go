@@ -2,12 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
-	"strings"
+
+	"github.com/spf13/pflag"
 
 	"github.com/ayanrajpoot10/hianime-api/config"
 	"github.com/ayanrajpoot10/hianime-api/internal/api"
@@ -19,7 +19,6 @@ type App struct {
 	config  *config.Config
 }
 
-// outputJSON prints data in pretty JSON format or saves to file if output flag is set
 func (a *App) outputJSON(data any) {
 	output, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
@@ -169,7 +168,7 @@ func main() {
 	case "producer":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime producer <producer-name> [page]")
-			fmt.Println("Example: hianime producer \"Studio Ghibli\" 1")
+			fmt.Println("Example: hianime producer \"Ufotable\" 1")
 			return
 		}
 		producerName := args[0]
@@ -200,43 +199,23 @@ func setupApp() (*App, string, []string) {
 
 	cfg := config.New()
 
-	flagSet := flag.NewFlagSet(command, flag.ExitOnError)
+	// Define flags using pflag
+	output := pflag.String("output", cfg.OutputFile, "Output file path")
+	verbose := pflag.Bool("verbose", cfg.Verbose, "Enable verbose logging")
+	port := pflag.String("port", cfg.Port, "Port to run the server on")
+	host := pflag.String("host", cfg.Host, "Host to bind the server to")
 
-	// Define flags
-	output := flagSet.String("output", cfg.OutputFile, "Output file path")
-	verbose := flagSet.Bool("verbose", cfg.Verbose, "Enable verbose logging")
-	port := flagSet.String("port", cfg.Port, "Port to run the server on")
-	host := flagSet.String("host", cfg.Host, "Host to bind the server to")
-
-	// Parse flags starting from the third argument
-	// Use a custom approach to handle flags anywhere in arguments
-	var args []string
-	var flagArgs []string
-
-	// Separate flags from positional arguments
-	remainingArgs := os.Args[2:]
-	for i := 0; i < len(remainingArgs); i++ {
-		arg := remainingArgs[i]
-		if strings.HasPrefix(arg, "--") || strings.HasPrefix(arg, "-") {
-			flagArgs = append(flagArgs, arg)
-			// Check if this flag has a value (next argument doesn't start with -)
-			if i+1 < len(remainingArgs) && !strings.HasPrefix(remainingArgs[i+1], "-") {
-				i++
-				flagArgs = append(flagArgs, remainingArgs[i])
-			}
-		} else {
-			args = append(args, arg)
-		}
-	}
-
-	// Parse the separated flags
-	flagSet.Parse(flagArgs)
+	// Parse flags from all arguments after the command
+	pflag.CommandLine.Parse(os.Args[2:])
 
 	// Apply parsed flags to config
 	cfg.OutputFile = *output
 	cfg.Verbose = *verbose
 	cfg.Port = *port
 	cfg.Host = *host
+
+	// Get non-flag arguments (positional arguments)
+	args := pflag.Args()
 
 	s := scraper.New(cfg)
 
