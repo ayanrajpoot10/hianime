@@ -4,8 +4,8 @@ services:
     env: go
     plan: free
     branch: main
-    buildCommand: go build -tags netgo -ldflags "-s -w" -o app ./cmd/hianime
-    startCommand: ./app serve
+    buildCommand: go build -tags netgo -ldflags "-s -w" -o hianime ./cmd/hianime
+    startCommand: ./hianime serve
     envVars:
       - key: PORT
         value: 3030
