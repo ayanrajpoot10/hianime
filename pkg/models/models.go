@@ -93,7 +93,6 @@ type EpisodeInfo struct {
 	ID       string `json:"id"`
 	Title    string `json:"title"`
 	JName    string `json:"jname,omitempty"`
-	URL      string `json:"url"`
 	Episode  int    `json:"episode"`
 	IsFiller bool   `json:"is_filler"`
 }

@@ -84,11 +84,6 @@ func (s *Scraper) Episodes(animeID string) (*models.EpisodesResponse, error) {
 			episode.ID = fmt.Sprintf("%s::ep=%s", animeID, epID)
 		}
 
-		// Extract episode URL
-		if href, exists := sel.Attr("href"); exists {
-			episode.URL = fmt.Sprintf("%s%s", s.config.BaseURL, href)
-		}
-
 		// Title and JName
 		titleSel := sel.Find(".ep-name.e-dynamic-name")
 		episode.Title = strings.TrimSpace(titleSel.AttrOr("title", ""))
