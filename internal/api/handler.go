@@ -26,7 +26,7 @@ func NewHandler(s *scraper.Scraper) *Handler {
 }
 
 // writeJSON writes a JSON response
-func (h *Handler) writeJSON(w http.ResponseWriter, statusCode int, data any) {
+func writeJSON(w http.ResponseWriter, statusCode int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
@@ -49,30 +49,30 @@ func (h *Handler) writeJSON(w http.ResponseWriter, statusCode int, data any) {
 }
 
 // writeError writes an error response
-func (h *Handler) writeError(w http.ResponseWriter, statusCode int, err error) {
-	h.writeJSON(w, statusCode, err.Error())
+func writeError(w http.ResponseWriter, statusCode int, err error) {
+	writeJSON(w, statusCode, err.Error())
 }
 
 // Homepage handles GET /api/home
 func (h *Handler) Homepage(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	data, err := h.scraper.Homepage()
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // AnimeDetails handles GET /api/anime/{id}
 func (h *Handler) AnimeDetails(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
@@ -81,23 +81,23 @@ func (h *Handler) AnimeDetails(w http.ResponseWriter, req *http.Request) {
 	animeID := path[len("/api/anime/"):]
 
 	if animeID == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
 	data, err := h.scraper.AnimeDetails(animeID)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // AnimeQtipInfo handles GET /api/qtip/{id}
 func (h *Handler) AnimeQtipInfo(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
@@ -106,30 +106,30 @@ func (h *Handler) AnimeQtipInfo(w http.ResponseWriter, req *http.Request) {
 	animeID := path[len("/api/qtip/"):]
 
 	if animeID == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
 	data, err := h.scraper.GetAnimeQtipInfo(animeID)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // EstimatedSchedule handles GET /api/schedule
 func (h *Handler) EstimatedSchedule(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	query := req.URL.Query()
 	date := query.Get("date")
 	if date == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
@@ -142,17 +142,17 @@ func (h *Handler) EstimatedSchedule(w http.ResponseWriter, req *http.Request) {
 
 	data, err := h.scraper.GetEstimatedSchedule(date, tzOffset)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // NextEpisodeSchedule handles GET /api/next-episode/{id}
 func (h *Handler) NextEpisodeSchedule(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
@@ -161,30 +161,30 @@ func (h *Handler) NextEpisodeSchedule(w http.ResponseWriter, req *http.Request) 
 	animeID := path[len("/api/next-episode/"):]
 
 	if animeID == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
 	data, err := h.scraper.GetNextEpisodeSchedule(animeID)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // Search handles GET /api/search
 func (h *Handler) Search(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	query := req.URL.Query()
 	keyword := query.Get("keyword")
 	if keyword == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
@@ -197,40 +197,40 @@ func (h *Handler) Search(w http.ResponseWriter, req *http.Request) {
 
 	data, err := h.scraper.Search(keyword, page)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // Suggestions handles GET /api/suggestion
 func (h *Handler) Suggestions(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	query := req.URL.Query()
 	keyword := query.Get("keyword")
 	if keyword == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
 	data, err := h.scraper.Suggestions(keyword)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // Episodes handles GET /api/episodes/{id}
 func (h *Handler) Episodes(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
@@ -239,53 +239,53 @@ func (h *Handler) Episodes(w http.ResponseWriter, req *http.Request) {
 	animeID := path[len("/api/episodes/"):]
 
 	if animeID == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
 	data, err := h.scraper.Episodes(animeID)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // Servers handles GET /api/servers
 func (h *Handler) Servers(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	query := req.URL.Query()
 	episodeID := query.Get("id")
 	if episodeID == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
 	data, err := h.scraper.Servers(episodeID)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // Stream handles GET /api/stream
 func (h *Handler) Stream(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
 	query := req.URL.Query()
 	episodeID := query.Get("id")
 	if episodeID == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
@@ -301,17 +301,17 @@ func (h *Handler) Stream(w http.ResponseWriter, req *http.Request) {
 
 	data, err := h.scraper.StreamLinks(episodeID, serverType, serverName)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // AnimeList handles GET /api/animes/{category}
 func (h *Handler) AnimeList(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
@@ -320,7 +320,7 @@ func (h *Handler) AnimeList(w http.ResponseWriter, req *http.Request) {
 	category := path[len("/api/animes/"):]
 
 	if category == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
@@ -334,17 +334,17 @@ func (h *Handler) AnimeList(w http.ResponseWriter, req *http.Request) {
 
 	data, err := h.scraper.AnimeList(category, page)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // GenreList handles GET /api/genre/{genre}
 func (h *Handler) GenreList(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
@@ -353,7 +353,7 @@ func (h *Handler) GenreList(w http.ResponseWriter, req *http.Request) {
 	genre := path[len("/api/genre/"):]
 
 	if genre == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
@@ -367,17 +367,17 @@ func (h *Handler) GenreList(w http.ResponseWriter, req *http.Request) {
 
 	data, err := h.scraper.GenreList(genre, page)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // AZList handles GET /api/azlist/{sortOption}
 func (h *Handler) AZList(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
@@ -386,7 +386,7 @@ func (h *Handler) AZList(w http.ResponseWriter, req *http.Request) {
 	sortOption := path[len("/api/azlist/"):]
 
 	if sortOption == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
@@ -400,17 +400,17 @@ func (h *Handler) AZList(w http.ResponseWriter, req *http.Request) {
 
 	data, err := h.scraper.GetAZList(sortOption, page)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // Producer handles GET /api/producer/{producer-name}
 func (h *Handler) Producer(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
@@ -419,7 +419,7 @@ func (h *Handler) Producer(w http.ResponseWriter, req *http.Request) {
 	producerName := path[len("/api/producer/"):]
 
 	if producerName == "" {
-		h.writeError(w, http.StatusBadRequest, http.ErrMissingFile)
+		writeError(w, http.StatusBadRequest, http.ErrMissingFile)
 		return
 	}
 
@@ -433,17 +433,17 @@ func (h *Handler) Producer(w http.ResponseWriter, req *http.Request) {
 
 	data, err := h.scraper.GetProducerAnimes(producerName, page)
 	if err != nil {
-		h.writeError(w, http.StatusInternalServerError, err)
+		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.writeJSON(w, http.StatusOK, data)
+	writeJSON(w, http.StatusOK, data)
 }
 
 // Health handles GET /api/health
 func (h *Handler) Health(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		h.writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
+		writeError(w, http.StatusMethodNotAllowed, http.ErrNotSupported)
 		return
 	}
 
@@ -452,7 +452,7 @@ func (h *Handler) Health(w http.ResponseWriter, req *http.Request) {
 		"message": "hianime API is running",
 	}
 
-	h.writeJSON(w, http.StatusOK, response)
+	writeJSON(w, http.StatusOK, response)
 }
 
 // Root handles requests to the root path
@@ -500,5 +500,5 @@ func (h *Handler) APIRoot(w http.ResponseWriter, req *http.Request) {
 		},
 	}
 
-	h.writeJSON(w, http.StatusOK, response)
+	writeJSON(w, http.StatusOK, response)
 }

@@ -101,7 +101,7 @@ func (r *Router) route(w http.ResponseWriter, req *http.Request) {
 
 // handleNotFound handles 404 errors
 func (r *Router) handleNotFound(w http.ResponseWriter, req *http.Request) {
-	r.handler.writeError(w, http.StatusNotFound, fmt.Errorf("endpoint not found: %s", req.URL.Path))
+	writeError(w, http.StatusNotFound, fmt.Errorf("endpoint not found: %s", req.URL.Path))
 }
 
 // Start starts the HTTP server
