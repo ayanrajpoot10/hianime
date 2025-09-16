@@ -121,6 +121,20 @@ The API will be available at `http://localhost:3030` with documentation at the r
 http://localhost:3030/api
 ```
 
+### ⚠️ Sample testing instance
+
+For quick testing only, you can use the following sample testing instance (do not use for production):
+
+```
+https://hianime-api-iy4s.onrender.com
+```
+
+Example request against the sample instance:
+
+```bash
+curl "https://hianime-api-iy4s.onrender.com/api/home"
+```
+
 ### 📋 Available Endpoints
 
 | Method | Endpoint | Description |
