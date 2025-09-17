@@ -965,7 +965,6 @@ The application can be configured using environment variables:
 - `HOST` - Server host (default: 0.0.0.0)
 - `BASE_URL` - Base URL for scraping (default: https://hianime.to)
 - `TIMEOUT` - HTTP request timeout in seconds (default: 30)
-- `RATE_LIMIT` - Rate limit between requests in milliseconds (default: 500)
 - `VERBOSE` - Enable verbose logging (default: false)
 - `ENABLE_CORS` - Enable CORS headers (default: true)
 
@@ -979,13 +978,6 @@ hianime serve --port 8080 --verbose
 # Override output
 hianime search "anime" --output results.json
 ```
-
-### Rate Limiting
-The scraper includes built-in rate limiting to avoid overwhelming the target website:
-
-- Default: 500ms between requests
-- Configurable via `RATE_LIMIT` environment variable
-- Helps prevent IP blocking and ensures stable operation
 
 ### CORS Configuration
 The API server supports CORS for web applications:

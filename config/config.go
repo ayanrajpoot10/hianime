@@ -18,7 +18,6 @@ type Config struct {
 	BaseURL    string        `json:"base_url"`
 	UserAgent  string        `json:"user_agent"`
 	Timeout    time.Duration `json:"timeout"`
-	RateLimit  time.Duration `json:"rate_limit"`
 	MaxRetries int           `json:"max_retries"`
 
 	// CLI configuration
@@ -44,7 +43,6 @@ func DefaultConfig() *Config {
 		BaseURL:        "https://hianime.to",
 		UserAgent:      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
 		Timeout:        30 * time.Second,
-		RateLimit:      500 * time.Millisecond,
 		MaxRetries:     3,
 		Verbose:        true,
 		EnableCORS:     true,
@@ -75,12 +73,6 @@ func (c *Config) LoadFromEnv() {
 	if timeoutStr := os.Getenv("TIMEOUT"); timeoutStr != "" {
 		if timeout, err := time.ParseDuration(timeoutStr); err == nil {
 			c.Timeout = timeout
-		}
-	}
-
-	if rateLimitStr := os.Getenv("RATE_LIMIT"); rateLimitStr != "" {
-		if rateLimit, err := time.ParseDuration(rateLimitStr); err == nil {
-			c.RateLimit = rateLimit
 		}
 	}
 
