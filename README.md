@@ -141,8 +141,6 @@ curl "https://hianime-api-iy4s.onrender.com/api/home"
 | GET | `/next-episode/{id}` | Next episode schedule for an anime |
 | GET | `/producer/{producer-name}?page={page}` | Anime list by producer/studio |
 | GET | `/qtip/{id}` | Short / quick info for an anime |
-| GET | `/health` | Health check |
-| GET | `/` | API documentation root (HTML) |
 
 
 ### Example API Requests

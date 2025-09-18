@@ -9,7 +9,3 @@ services:
     envVars:
       - key: PORT
         value: 3030
-      - key: GO111MODULE
-        value: "on"
-      - key: CGO_ENABLED
-        value: "0"
