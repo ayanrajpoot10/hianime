@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h1 align="center">HiAnime API</h1>
+# <p align="center">HiAnime API</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Go-1.24+-blue" alt="Go Version">
@@ -79,24 +79,14 @@ hianime anime "death-note-60"
 # Get episode list
 hianime episodes "death-note-60"
 
-# Get anime by category
-hianime list most-popular 1
-
 # Get anime by genre
 hianime genre action 1
 
-# Get search suggestions
-hianime suggestions "one piece"
-
-# Get available servers for an episode
-hianime servers "one-piece-100::ep=1"
-
 # Get streaming links (type: sub|dub, server name)
-hianime stream "one-piece-100::ep=1" sub HD-1
+hianime stream "death-note-60::ep=1464" sub HD-2
 
-# Schedule/next-episode
+# Get shedule by date
 hianime schedule "2024-01-15" -330
-hianime next-episode "death-note-60"
 ```
 
 ### API Server
@@ -121,7 +111,7 @@ http://localhost:3030/api
 
 ### Sample testing instance
 
-For quick testing only, you can use the following sample testing instance (do not use for production):
+For quick testing only, you can use the following sample testing instance:
 
 ```
 https://hianime-api-iy4s.onrender.com
@@ -172,63 +162,6 @@ curl "http://localhost:3030/api/episodes/death-note-60"
 
 # Get most popular anime
 curl "http://localhost:3030/api/animes/most-popular?page=1"
-```
-
-## 🔄 API Response Format
-
-All API responses follow this structure:
-
-```json
-{
-  "success": true,
-  "data": {
-    // Response data here
-  },
-  "message": "",
-  "error": ""
-}
-```
-
-### Example Homepage Response
-
-```json
-{
-  "success": true,
-  "data": {
-    "spotlight": [
-      {
-        "id": "one-piece-100",
-        "title": "One Piece",
-        "jname": "One Piece",
-        "poster": "https://cdn.noitatnemucod.net/thumbnail/1366x768/100/db8603d2f4fa78e1c42f6cf829030a18.jpg",
-        "rank": 1,
-        "type": "TV",
-        "quality": "HD",
-        "duration": "24m",
-        "aired": "Oct 20, 1999",
-        "description": "Gold Roger was known as the \"Pirate King,\" the strongest and most infamous being to have sailed the Grand Line. The capture and execution of Roger by the World Government brought a change throughout the world. His last words before his death revealed the existence of the greatest treasure in the world, One Piece. It was this revelation that brought about the Grand Age of Pirates, men who dreamed of finding One Piece—which promises an unlimited amount of riches and fame—and quite possibly the pinnacle of glory and the title of the Pirate King.\n\nEnter Monkey Luffy, a 17-year-old boy who defies your standard definition of a pirate. Rather than the popular persona of a wicked, hardened, toothless pirate ransacking villages for fun, Luffy's reason for being a pirate is one of pure wonder: the thought of an exciting adventure that leads him to intriguing people and ultimately, the promised treasure. Following in the footsteps of his childhood hero, Luffy and his crew travel across the Grand Line, experiencing crazy adventures, unveiling dark mysteries and battling strong enemies, all in order to reach the most coveted of all fortunes—One Piece.\n\n[Written by MAL Rewrite]",
-        "episodes": {
-          "sub": 1143,
-          "dub": 1133,
-          "eps": 1143
-        }
-      },
-      [...]
-    ],
-    "trending": [...],
-    "latestCompleted": [...],
-    "latestUpdated": [...],
-    "topAiring": [...],
-    "mostPopular": [...],
-    "mostFavorite": [...],
-    "topUpcoming": [...],
-    "top10": {
-      "today": [...],
-      "week": [...],
-      "month": [...]
-    }
-  }
-}
 ```
 
 ## ⚠️ Disclaimer
