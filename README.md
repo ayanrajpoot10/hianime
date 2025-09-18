@@ -7,7 +7,7 @@
 <h1 align="center">HiAnime API</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Go-1.21+-blue" alt="Go Version">
+  <img src="https://img.shields.io/badge/Go-1.24+-blue" alt="Go Version">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
   <img src="https://img.shields.io/github/stars/ayanrajpoot10/hianime?style=social" alt="GitHub Stars">
 </p>
@@ -17,22 +17,20 @@
 </p>
 
 ## ✨ Features
+- **Built with Go** — Fast and efficient web scraper
+- **REST API** — JSON endpoints for all major hianime.to features
+- **CLI Tool** — Direct scraping from the terminal
+- **Streaming Support** — Fetch servers & links (sub/dub)
+- **Search & Discovery** — Search, suggestions, categories, genres
+- **Rich Data** — Anime details, episodes, schedules, studios
+- **Configurable** — Flags & env variables with CORS support
+- **Easy Deployment** — One-click deploy to Render or run locally
 
-- **Built with Go**: High-performance Go application for efficient scraping
-- **REST API Server**: Full-featured HTTP API with JSON responses
-- **CLI Tool**: Command-line interface for direct scraping
-- **Streaming Links**: Fetch streaming links from multiple servers
-- **Search & Discovery**: Search anime with suggestions and pagination
-- **Comprehensive Data**: Anime details, episodes, servers, and genres
-- **Comprehensive Coverage**: All major hianime.to endpoints
-- **Configurable**: Environment variables and command-line flags
-- **CORS Support**: Cross-origin resource sharing for web applications
-
-## 🚀 Quick Start
+## 🛠️ Installation
 
 Start using HiAnime API quickly, either locally or in the cloud.
 
-### 🛠️ Install & Run Locally
+### Install & Run Locally
 
 Install using `go install`:
 
@@ -48,7 +46,7 @@ hianime -h
 
 ---
 
-### ☁️ Deploy to Render
+### Deploy to Render
 
 Deploy your API to Render instantly with a single click:
 
@@ -62,9 +60,9 @@ Deploy your API to Render instantly with a single click:
 
 ## 📖 Usage
 
-> 📚 **Complete Documentation**: For detailed usage examples, all commands, and extended API reference, see **[USES.md](./USES.md)**
+> **Complete Documentation**: For detailed usage examples, all commands, and extended API reference, see **[USES.md](./USES.md)**
 
-### 💻 CLI Tool
+### CLI Tool
 
 The CLI tool provides direct access to scraping functions:
 
@@ -101,7 +99,7 @@ hianime schedule "2024-01-15" -330
 hianime next-episode "death-note-60"
 ```
 
-### 🌐 API Server
+### API Server
 
 Start the API server:
 ```bash
@@ -116,12 +114,12 @@ The API will be available at `http://localhost:3030` with documentation at the r
 
 ## 🔌 API Endpoints
 
-### 🔗 Base URL
+### Base URL
 ```
 http://localhost:3030/api
 ```
 
-### ⚠️ Sample testing instance
+### Sample testing instance
 
 For quick testing only, you can use the following sample testing instance (do not use for production):
 
@@ -135,7 +133,7 @@ Example request against the sample instance:
 curl "https://hianime-api-iy4s.onrender.com/api/home"
 ```
 
-### 📋 Available Endpoints
+### Available Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -157,7 +155,7 @@ curl "https://hianime-api-iy4s.onrender.com/api/home"
 | GET | `/` | API documentation root (HTML) |
 
 
-### 🔍 Example API Requests
+### Example API Requests
 
 ```bash
 # Get homepage
@@ -191,7 +189,7 @@ All API responses follow this structure:
 }
 ```
 
-### 📊 Example Homepage Response
+### Example Homepage Response
 
 ```json
 {
