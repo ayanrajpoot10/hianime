@@ -246,7 +246,7 @@ func (a *App) scrapHomepage() {
 		log.Fatalf("Failed to scrape homepage: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) searchAnime(keyword string, page int) {
@@ -259,7 +259,7 @@ func (a *App) searchAnime(keyword string, page int) {
 		log.Fatalf("Failed to search anime: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getAnimeDetails(animeID string) {
@@ -272,7 +272,7 @@ func (a *App) getAnimeDetails(animeID string) {
 		log.Fatalf("Failed to get anime details: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getAnimeQtipInfo(animeID string) {
@@ -285,7 +285,7 @@ func (a *App) getAnimeQtipInfo(animeID string) {
 		log.Fatalf("Failed to get anime qtip info: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getEpisodes(animeID string) {
@@ -298,7 +298,7 @@ func (a *App) getEpisodes(animeID string) {
 		log.Fatalf("Failed to get episodes: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getAnimeList(category string, page int) {
@@ -311,7 +311,7 @@ func (a *App) getAnimeList(category string, page int) {
 		log.Fatalf("Failed to get anime list: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getGenreList(genre string, page int) {
@@ -324,7 +324,7 @@ func (a *App) getGenreList(genre string, page int) {
 		log.Fatalf("Failed to get genre list: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getAZList(sortOption string, page int) {
@@ -337,7 +337,7 @@ func (a *App) getAZList(sortOption string, page int) {
 		log.Fatalf("Failed to get A-Z list: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getProducerAnimes(producerName string, page int) {
@@ -350,7 +350,7 @@ func (a *App) getProducerAnimes(producerName string, page int) {
 		log.Fatalf("Failed to get producer animes: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getServers(episodeID string) {
@@ -363,7 +363,7 @@ func (a *App) getServers(episodeID string) {
 		log.Fatalf("Failed to get servers: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getStreamLinks(episodeID, serverType, serverName string) {
@@ -376,7 +376,7 @@ func (a *App) getStreamLinks(episodeID, serverType, serverName string) {
 		log.Fatalf("Failed to get stream links: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getSuggestions(keyword string) {
@@ -389,7 +389,7 @@ func (a *App) getSuggestions(keyword string) {
 		log.Fatalf("Failed to get suggestions: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getEstimatedSchedule(date string, tzOffset int) {
@@ -402,7 +402,7 @@ func (a *App) getEstimatedSchedule(date string, tzOffset int) {
 		log.Fatalf("Failed to get estimated schedule: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func (a *App) getNextEpisodeSchedule(animeID string) {
@@ -415,7 +415,7 @@ func (a *App) getNextEpisodeSchedule(animeID string) {
 		log.Fatalf("Failed to get next episode schedule: %v", err)
 	}
 
-	outputJSON(a.config,data)
+	outputJSON(a.config, data)
 }
 
 func printUsage() {
