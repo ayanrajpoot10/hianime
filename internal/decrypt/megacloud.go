@@ -42,7 +42,7 @@ func (md *MegacloudDecryptor) Decrypt(selectedServer *models.Server, id string) 
 
 	// Fetch sources data and decryption key concurrently
 	type sourcesResult struct {
-		data map[string]interface{}
+		data map[string]any
 		err  error
 	}
 
@@ -64,7 +64,7 @@ func (md *MegacloudDecryptor) Decrypt(selectedServer *models.Server, id string) 
 		}
 		defer resp.Body.Close()
 
-		var result map[string]interface{}
+		var result map[string]any
 		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 			sourcesChan <- sourcesResult{err: err}
 			return
@@ -126,8 +126,8 @@ func (md *MegacloudDecryptor) Decrypt(selectedServer *models.Server, id string) 
 	}
 	baseURL := baseURLMatch[1]
 
-	var decryptedSources []map[string]interface{}
-	var rawSourceData map[string]interface{}
+	var decryptedSources []map[string]any
+	var rawSourceData map[string]any
 
 	// Try main decryption method
 	tokenURL := fmt.Sprintf("%s/%s?k=1&autoPlay=0&oa=0&asi=1", baseURL, sourceID)
@@ -199,15 +199,15 @@ func (md *MegacloudDecryptor) Decrypt(selectedServer *models.Server, id string) 
 		}
 		defer resp2.Body.Close()
 
-		var fallbackData map[string]interface{}
+		var fallbackData map[string]any
 		if err := json.NewDecoder(resp2.Body).Decode(&fallbackData); err != nil {
 			return nil, fmt.Errorf("failed to decode fallback data: %w", err)
 		}
 
 		// Extract file URL from fallback
-		if sources, ok := fallbackData["sources"].(map[string]interface{}); ok {
+		if sources, ok := fallbackData["sources"].(map[string]any); ok {
 			if file, ok := sources["file"].(string); ok {
-				decryptedSources = []map[string]interface{}{
+				decryptedSources = []map[string]any{
 					{"file": file},
 				}
 			}
@@ -215,7 +215,7 @@ func (md *MegacloudDecryptor) Decrypt(selectedServer *models.Server, id string) 
 
 		// Use fallback data for tracks, intro, outro if main data is empty
 		if rawSourceData == nil {
-			rawSourceData = make(map[string]interface{})
+			rawSourceData = make(map[string]any)
 		}
 		if rawSourceData["tracks"] == nil {
 			if tracks, ok := fallbackData["tracks"]; ok {
@@ -254,9 +254,9 @@ func (md *MegacloudDecryptor) Decrypt(selectedServer *models.Server, id string) 
 	}
 
 	// Set tracks
-	if tracks, ok := rawSourceData["tracks"].([]interface{}); ok {
+	if tracks, ok := rawSourceData["tracks"].([]any); ok {
 		for _, track := range tracks {
-			if trackMap, ok := track.(map[string]interface{}); ok {
+			if trackMap, ok := track.(map[string]any); ok {
 				t := models.Track{}
 				if file, ok := trackMap["file"].(string); ok {
 					t.File = file
@@ -270,7 +270,7 @@ func (md *MegacloudDecryptor) Decrypt(selectedServer *models.Server, id string) 
 	}
 
 	// Set intro
-	if intro, ok := rawSourceData["intro"].(map[string]interface{}); ok {
+	if intro, ok := rawSourceData["intro"].(map[string]any); ok {
 		tr := &models.TimeRange{}
 		if start, ok := intro["start"].(float64); ok {
 			tr.Start = int(start)
@@ -282,7 +282,7 @@ func (md *MegacloudDecryptor) Decrypt(selectedServer *models.Server, id string) 
 	}
 
 	// Set outro
-	if outro, ok := rawSourceData["outro"].(map[string]interface{}); ok {
+	if outro, ok := rawSourceData["outro"].(map[string]any); ok {
 		tr := &models.TimeRange{}
 		if start, ok := outro["start"].(float64); ok {
 			tr.Start = int(start)

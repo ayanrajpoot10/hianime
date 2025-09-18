@@ -95,7 +95,7 @@ func (te *TokenExtractor) ExtractToken(url string) (string, error) {
 			rawObj := match[2]
 
 			// Try to parse as JSON
-			var parsedObj map[string]interface{}
+			var parsedObj map[string]any
 			if err := json.Unmarshal([]byte(rawObj), &parsedObj); err == nil {
 				var stringValues []string
 				for _, val := range parsedObj {
