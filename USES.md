@@ -1,18 +1,16 @@
-# HiAnime Scraper - Complete Usage Guide
+# HiAnime API/CLI - Complete Usage Guide
 
 ## Table of Contents
 1. [CLI Commands](#cli-commands)
 2. [REST API Endpoints](#rest-api-endpoints)
 3. [Response Formats](#response-formats)
-4. [Examples](#examples)
-5. [Error Handling](#error-handling)
-6. [Configuration](#configuration)
+4. [Configuration](#configuration)
 
 ---
 
 ## CLI Commands
 
-The HiAnime Scraper supports both CLI commands and a REST API server. All CLI commands support output formatting and file output options.
+The HiAnime Scraper supports both CLI commands and a REST API server.
 
 ### Global Options
 
@@ -279,12 +277,12 @@ hianime servers <episode-id> [options]
 ```
 
 **Parameters:**
-- `<episode-id>` - Episode ID (e.g., "one-piece-100::ep=1")
+- `<episode-id>` - Episode ID (e.g., "death-note-60::ep=1464")
 
 **Examples:**
 ```bash
 # Get servers for episode
-hianime servers "death-note-60::ep=1"
+hianime servers "death-note-60::ep=1464"
 ```
 
 #### Get Stream Links
@@ -300,13 +298,13 @@ hianime stream <episode-id> <server-type> <server-name> [options]
 **Examples:**
 ```bash
 # Get stream links for subbed episode
-hianime stream "one-piece-100::ep=1" sub HD-1
+hianime stream "one-piece-100::ep=2142" sub HD-1
 
 # Get stream links for dubbed episode
-hianime stream "death-note-60::ep=1" dub HD-2
+hianime stream "death-note-60::ep=1464" dub HD-2
 
 # Get stream links and save to file
-hianime stream "naruto-1::ep=1" sub HD-1 --output stream_links.json
+hianime stream "naruto-677::ep=12352" sub HD-1 --output stream_links.json
 ```
 
 ### 9. Schedule Commands
@@ -813,149 +811,6 @@ curl "http://localhost:3030/api/next-episode/one-piece-100"
 }
 ```
 
----
-
-## Examples
-
-### CLI Examples
-
-#### Basic Usage
-```bash
-# Get homepage
-hianime home
-
-# Search for anime
-hianime search "demon slayer"
-
-# Get anime details
-hianime anime "kimetsu-no-yaiba-55"
-
-# Get episodes
-hianime episodes "kimetsu-no-yaiba-55"
-```
-
-#### Advanced Usage
-```bash
-# Get streaming servers and links
-hianime servers "one-piece-100::ep=1"
-hianime stream "one-piece-100::ep=1" sub HD-1
-
-# Get schedule information
-hianime schedule "2024-01-15" -330
-hianime next-episode "one-piece-100"
-
-# Producer-specific anime
-hianime producer "Studio Ghibli" 1
-```
-
-### API Examples
-
-#### Using curl
-```bash
-# Get homepage
-curl "http://localhost:3030/api/home"
-
-# Search with pagination
-curl "http://localhost:3030/api/search?keyword=one%20piece&page=1"
-
-# Get anime details
-curl "http://localhost:3030/api/anime/one-piece-100"
-
-# Get streaming links
-curl "http://localhost:3030/api/stream?id=one-piece-100::ep=1&type=sub&server=HD-1"
-```
-
-#### Using JavaScript (Fetch API)
-```javascript
-// Search for anime
-const searchAnime = async (keyword, page = 1) => {
-  const response = await fetch(`http://localhost:3030/api/search?keyword=${encodeURIComponent(keyword)}&page=${page}`);
-  const data = await response.json();
-  return data;
-};
-
-// Get anime details
-const getAnimeDetails = async (animeId) => {
-  const response = await fetch(`http://localhost:3030/api/anime/${animeId}`);
-  const data = await response.json();
-  return data;
-};
-
-// Get streaming links
-const getStreamLinks = async (episodeId, type = 'sub', server = 'HD-1') => {
-  const response = await fetch(`http://localhost:3030/api/stream?id=${episodeId}&type=${type}&server=${server}`);
-  const data = await response.json();
-  return data;
-};
-```
-
-#### Using Python (requests)
-```python
-import requests
-
-# Search for anime
-def search_anime(keyword, page=1):
-    url = f"http://localhost:3030/api/search"
-    params = {"keyword": keyword, "page": page}
-    response = requests.get(url, params=params)
-    return response.json()
-
-# Get anime details
-def get_anime_details(anime_id):
-    url = f"http://localhost:3030/api/anime/{anime_id}"
-    response = requests.get(url)
-    return response.json()
-
-# Get homepage
-def get_homepage():
-    url = "http://localhost:3030/api/home"
-    response = requests.get(url)
-    return response.json()
-```
-
----
-
-## Error Handling
-
-### CLI Error Handling
-The CLI application exits with appropriate error codes and messages:
-
-- **Missing Parameters**: Shows usage information
-- **Network Errors**: Shows connection error messages
-- **Parsing Errors**: Shows detailed error information
-- **File Errors**: Shows file operation error messages
-
-### API Error Handling
-API endpoints return error responses in the standard format:
-
-```json
-{
-  "success": false,
-  "data": null,
-  "error": "Error description",
-  "message": ""
-}
-```
-
-**Common HTTP Status Codes:**
-- `200` - Success
-- `400` - Bad Request (missing parameters)
-- `404` - Not Found (invalid endpoint)
-- `405` - Method Not Allowed
-- `500` - Internal Server Error
-
-**Example Error Response:**
-```json
-{
-  "success": false,
-  "data": null,
-  "error": "anime not found",
-  "message": ""
-}
-```
-
----
-
 ## Configuration
 
 ### Environment Variables
@@ -978,16 +833,3 @@ hianime serve --port 8080 --verbose
 # Override output
 hianime search "anime" --output results.json
 ```
-
-### CORS Configuration
-The API server supports CORS for web applications:
-
-- Enabled by default for all origins
-- Configurable via `ENABLE_CORS` environment variable
-- Allows cross-origin requests from web browsers
-
----
-
-## Support
-
-For issues, questions, or contributions, please refer to the project repository and documentation.
