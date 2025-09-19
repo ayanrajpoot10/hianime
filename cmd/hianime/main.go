@@ -48,6 +48,7 @@ func main() {
 	case "search":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime search <keyword> [page]")
+			fmt.Println("Example: hianime search \"one piece\" 1")
 			return
 		}
 		keyword := args[0]
@@ -61,6 +62,7 @@ func main() {
 	case "anime", "details":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime anime <anime-id>")
+			fmt.Println("Example: hianime anime \"one-piece-100\"")
 			return
 		}
 		animeID := args[0]
@@ -68,6 +70,7 @@ func main() {
 	case "qtip":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime qtip <anime-id>")
+			fmt.Println("Example: hianime qtip \"one-piece-100\"")
 			return
 		}
 		animeID := args[0]
@@ -75,6 +78,7 @@ func main() {
 	case "episodes":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime episodes <anime-id>")
+			fmt.Println("Example: hianime episodes \"one-piece-100\"")
 			return
 		}
 		animeID := args[0]
@@ -82,6 +86,7 @@ func main() {
 	case "list":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime list <category> [page]")
+			fmt.Println("Example: hianime list \"popular\" 1")
 			return
 		}
 		category := args[0]
@@ -95,6 +100,7 @@ func main() {
 	case "genre":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime genre <genre-name> [page]")
+			fmt.Println("Example: hianime genre Action 1")
 			return
 		}
 		genre := args[0]
@@ -123,6 +129,7 @@ func main() {
 	case "servers":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime servers <episode-id>")
+			fmt.Println("Example: hianime servers \"one-piece-100::ep=2142\"")
 			return
 		}
 		episodeID := args[0]
@@ -130,7 +137,7 @@ func main() {
 	case "stream":
 		if len(args) < 3 {
 			fmt.Println("Usage: hianime stream <episode-id> <server-type> <server-name>")
-			fmt.Println("Example: hianime stream \"one-piece-100::ep=1\" sub HD-1")
+			fmt.Println("Example: hianime stream \"one-piece-100::ep=2142\" sub HD-1")
 			return
 		}
 		episodeID := args[0]
@@ -140,6 +147,7 @@ func main() {
 	case "suggestions", "suggest":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime suggestions <keyword>")
+			fmt.Println("Example: hianime suggestions \"naruto\"")
 			return
 		}
 		keyword := args[0]
@@ -161,6 +169,7 @@ func main() {
 	case "next-episode", "next":
 		if len(args) < 1 {
 			fmt.Println("Usage: hianime next-episode <anime-id>")
+			fmt.Println("Example: hianime next-episode \"one-piece-100\"")
 			return
 		}
 		animeID := args[0]
@@ -199,22 +208,13 @@ func setupApp() (*App, string, []string) {
 
 	cfg := config.New()
 
-	// Define flags using pflag
-	output := pflag.String("output", cfg.OutputFile, "Output file path")
-	verbose := pflag.Bool("verbose", cfg.Verbose, "Enable verbose logging")
-	port := pflag.String("port", cfg.Port, "Port to run the server on")
-	host := pflag.String("host", cfg.Host, "Host to bind the server to")
+	pflag.StringVar(&cfg.OutputFile, "output", cfg.OutputFile, "Output file path")
+	pflag.BoolVar(&cfg.Verbose, "verbose", cfg.Verbose, "Enable verbose logging")
+	pflag.StringVar(&cfg.Port, "port", cfg.Port, "Port to run the server on")
+	pflag.StringVar(&cfg.Host, "host", cfg.Host, "Host to bind the server to")
 
-	// Parse flags from all arguments after the command
 	pflag.CommandLine.Parse(os.Args[2:])
 
-	// Apply parsed flags to config
-	cfg.OutputFile = *output
-	cfg.Verbose = *verbose
-	cfg.Port = *port
-	cfg.Host = *host
-
-	// Get non-flag arguments (positional arguments)
 	args := pflag.Args()
 
 	s := scraper.New(cfg)
