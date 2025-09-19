@@ -85,7 +85,7 @@ hianime genre action 1
 # Get streaming links (type: sub|dub, server name)
 hianime stream "death-note-60::ep=1464" sub HD-2
 
-# Get shedule by date
+# Get schedule by date
 hianime schedule "2024-01-15" -330
 ```
 
