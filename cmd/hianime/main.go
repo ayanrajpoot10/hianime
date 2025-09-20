@@ -443,11 +443,6 @@ COMMANDS:
     help                           Show this help message
     version                        Show version information
 
-CATEGORIES:
-    most-popular, top-airing, most-favorite, completed, recently-added,
-    recently-updated, top-upcoming, subbed-anime, dubbed-anime, movie,
-    tv, ova, ona, special, events
-
 OPTIONS:
     --output <file>               Output to file
     --verbose                     Enable verbose logging
