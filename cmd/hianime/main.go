@@ -454,10 +454,8 @@ EXAMPLES:
     hianime home --output home.json
     hianime search "death note" 1
     hianime anime "death-note-60"
-    hianime qtip "death-note-60"
     hianime schedule "2025-09-15" -330
-    hianime list most-popular 1
-    hianime azlist A 1`)
+    hianime list most-popular 1`)
 }
 
 func printVersion() {
