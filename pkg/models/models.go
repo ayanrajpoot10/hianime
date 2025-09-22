@@ -171,7 +171,7 @@ type ListPageResponse struct {
 // QtipAnime represents anime information from qtip endpoint
 type QtipAnime struct {
 	ID          string    `json:"id"`
-	Name        string    `json:"name,omitempty"`
+	Title       string    `json:"title,omitempty"`
 	MalScore    string    `json:"malscore,omitempty"`
 	Quality     string    `json:"quality,omitempty"`
 	Episodes    *Episodes `json:"episodes,omitempty"`

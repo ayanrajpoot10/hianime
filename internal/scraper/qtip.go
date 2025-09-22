@@ -73,7 +73,7 @@ func (s *Scraper) GetAnimeQtipInfo(animeID string) (*models.QtipResponse, error)
 
 	// Extract title
 	if title := strings.TrimSpace(qtipContent.Find(".pre-qtip-title").Text()); title != "" {
-		response.Anime.Name = title
+		response.Anime.Title = title
 	}
 
 	// Extract MAL score (first child of pre-qtip-detail)
